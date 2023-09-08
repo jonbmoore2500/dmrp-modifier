@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 import processFile from "../custom_hooks/processFile"
 
-function CSVImport() {
+function CSVImport({setData}) {
 
     const [file, setFile] = useState(null)
 
@@ -17,6 +17,7 @@ function CSVImport() {
             fileReader.onload = function (e) {
                 const csvOutput = e.target.result 
                 console.log(processFile(csvOutput))
+                setData(processFile(csvOutput))
             }
         }
         fileReader.readAsText(file)

@@ -8,7 +8,8 @@ function processFile(data) {
     }
 
     function createProjObj(data) { // absolutely reformat and break out smaller functions, works for the time being
-        
+        // make helper function to sort dates - currentyl sorted due to csv format, should still build function
+
         let totaledArr = []
 
         data.forEach((row) => {
@@ -39,8 +40,12 @@ function processFile(data) {
                 } else { // user does not yet exist in project object, adds user to project object
                     totaledArr[i0]["users"].push({"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}]})
                 }
+
+                if (!row[2].includes("Adjusted") && !totaledArr[i0]["timeSheets"].includes(row[2])) {
+                    totaledArr[i0]["timeSheets"] = [row[2], ...totaledArr[i0]["timeSheets"]]
+                }
             } else { // object with project name does not yet exist, creates project object with first user and timesheet
-                totaledArr.push({"proj": row[0], "users": [{"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}]}]})
+                totaledArr.push({"proj": row[0], "users": [{"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}]}], "timeSheets": [row[2]]})
             }
         })
 
@@ -49,7 +54,7 @@ function processFile(data) {
 
     let finalData = createProjObj(cutExtraData(data))
 
-    return {"final": finalData}
+    return finalData
 }
 
 export default processFile
