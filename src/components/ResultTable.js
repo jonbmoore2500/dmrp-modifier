@@ -48,28 +48,26 @@ function ResultTable({tableData}) {
                 </select>
             </form>
             { projIndex < 0 ? <p>Please select a project</p> :
-                <div id="tableInner">
-                    <table>
-                        <caption>{selectedP.proj}</caption>
-                        <thead>
-                            <tr>
-                                {tableHead.map((x) => (
-                                    <th key={x}>{x}</th>
+                <table id="tableInner">
+                    <caption id="tableCaption">{selectedP.proj}</caption>
+                    <thead>
+                        <tr>
+                            {tableHead.map((x) => (
+                                <th key={x} className="tableHeader">{x}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tableRows.map((r) => (
+                            <tr key={r[0]}>
+                                <th className="tableUser">{r[0]}</th> 
+                                {r.slice(1).map((x, i) => (
+                                    <td key={i} className="tableValue">{x}</td>
                                 ))}
                             </tr>
-                        </thead>
-                        <tbody>
-                            {tableRows.map((r) => (
-                                <tr key={r[0]}>
-                                    <td className="tableUser">{r[0]}</td> 
-                                    {r.slice(1).map((x, i) => (
-                                        <td key={i} className="tableValue">{x}</td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                        ))}
+                    </tbody>
+                </table>
             }
             <div className="buttonDiv">
                 <label>Show More Timesheets?</label>
