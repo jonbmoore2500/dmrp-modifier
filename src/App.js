@@ -12,7 +12,7 @@ function App() {
 
   return (
     <div>
-      {/* <Header /> */}
+      <Header />
       <CSVImport setData={setProcessedData}/>
       {processedData.length > 0 ? <ResultTable tableData={processedData}/> : null}
       {/* <ExportForm /> */}

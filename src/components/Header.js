@@ -4,8 +4,9 @@ function Header() {
 
 
     return (
-        <div>
-            <h2>CSV Modifier</h2>
+        <div id="appHeader">
+            <h1>CSV Modifier</h1>
+            <h3>For DM at Rightpoint</h3>
         </div>
     )
 }

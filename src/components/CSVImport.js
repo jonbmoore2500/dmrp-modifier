@@ -25,7 +25,7 @@ function CSVImport({setData}) {
     }
 
     return (
-        <div>
+        <div id="importForm">
             <h3>CSV Import</h3>
             <form onSubmit={(e) => handleOnSubmit(e)}>
                 <input 
