@@ -3,6 +3,7 @@ function processFile(data) {
     // cut extra rows
     // populate object
     // create optional date sort function, can be added into the flow easily later if needed
+    // sort names alphabetically
 
     function cutExtraData(data) {
         return data.split("\n").slice(2, -4).map((row) => {
@@ -42,7 +43,13 @@ function processFile(data) {
                         totaledArr[i0]["users"][i1]["timeSheets"] = [{"sheetTitle": row[2], "hours": row[3]}, ...totaledArr[i0]["users"][i1]["timeSheets"]]
                     }
                 } else { // user does not yet exist in project object, adds user to project object
-                    totaledArr[i0]["users"].push({"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}]})
+                    totaledArr[i0]["users"] = [...totaledArr[i0]["users"], {"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}]}].sort((a, b) => {
+                        if (a["userName"] < b["userName"]) {
+                            return -1
+                        } else {
+                            return 1
+                        }
+                    })
                 }
 
                 if (!row[2].includes("Adjusted") && !totaledArr[i0]["timeSheets"].includes(row[2])) {

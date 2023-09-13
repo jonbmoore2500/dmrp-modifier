@@ -4,6 +4,7 @@ function ResultTable({tableData}) {
 
     const [projIndex, setProjIndex] = useState(-1)
     const [columnNum, setColumnNum] = useState(3)
+    const [showIdle, setShowIdle] = useState(false)
 
     let selectedP = tableData[projIndex]
 
@@ -12,7 +13,7 @@ function ResultTable({tableData}) {
 
     function tableHelper(sheet, user) {
         let value = "0"
-        let i = user["timeSheets"].findIndex(element => {return element["sheetTitle"].includes(sheet)})    
+        let i = user["timeSheets"].findIndex(element => element["sheetTitle"].includes(sheet))    
         if (i >= 0) {
             value = String(user["timeSheets"][i]["hours"])
             if (user["timeSheets"][i]["sheetTitle"].includes("Adjusted")) {
@@ -25,9 +26,7 @@ function ResultTable({tableData}) {
     if (projIndex >= 0) {
         let timesheets = selectedP["timeSheets"].slice(0, columnNum)
         tableHead = ["Users", ...timesheets]
-        tableRows = selectedP["users"].map((user) => {
-            return [user["userName"], ...timesheets.map((sheet) => {return tableHelper(sheet, user)})] 
-        })
+        tableRows = selectedP["users"].map((user) => [user["userName"], ...timesheets.map((sheet) => tableHelper(sheet, user))])
     }
 
     return (
@@ -66,7 +65,7 @@ function ResultTable({tableData}) {
                                     <tr key={r[0]}>
                                         <th className="firstColumn">{r[0]}</th> 
                                         {r.slice(1).map((x, i) => (
-                                            <td key={i} className="tableValueCell">{x}</td>
+                                            <td key={i} className={x > 0 ? "positiveCell tableValueCell" : "zeroCell tableValueCell"}>{x}</td>
                                         ))}
                                     </tr>
                                 ))}

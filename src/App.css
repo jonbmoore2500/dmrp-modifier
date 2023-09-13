@@ -49,3 +49,11 @@ tbody tr:nth-child(odd) {
 tbody th, td {
   border: 1px solid black;
 }
+
+.positiveCell{
+  font-weight: bold;
+  color:black
+}
+.zeroCell{
+  color:rgb(158, 54, 54)
+}
