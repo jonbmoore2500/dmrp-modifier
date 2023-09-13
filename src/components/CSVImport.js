@@ -16,16 +16,17 @@ function CSVImport({setData}) {
         if (file) {
             fileReader.onload = function (e) {
                 const csvOutput = e.target.result 
-                console.log(processFile(csvOutput))
                 setData(processFile(csvOutput))
             }
+            fileReader.readAsText(file)
+        } else {
+            console.log("Please select a file")
         }
-        fileReader.readAsText(file)
-        
     }
 
     return (
         <div id="importForm">
+            <br></br>
             <h4>CSV Import</h4>
             <form onSubmit={(e) => handleOnSubmit(e)}>
                 <input 

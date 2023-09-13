@@ -31,9 +31,10 @@ function ResultTable({tableData}) {
     }
 
     return (
-        <div id="tableOuter">
+        <div>
+            <br></br>
             <form>
-                <label>Choose a project</label>
+                <label>Choose a project: </label>
                 <select 
                     onChange={(e) => {
                         setProjIndex(e.target.value)
@@ -48,35 +49,47 @@ function ResultTable({tableData}) {
                 </select>
             </form>
             { projIndex < 0 ? <p>Please select a project</p> :
-                <table id="tableInner">
-                    <caption id="tableCaption">{selectedP.proj}</caption>
-                    <thead>
-                        <tr>
-                            {tableHead.map((x) => (
-                                <th key={x} className="tableHeader">{x}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tableRows.map((r) => (
-                            <tr key={r[0]}>
-                                <th className="tableUser">{r[0]}</th> 
-                                {r.slice(1).map((x, i) => (
-                                    <td key={i} className="tableValue">{x}</td>
+                <div>
+                    <h3 id="tableCaption">{selectedP.proj}</h3>
+                    <div id="tableOuter">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th className="firstColumn">{tableHead[0]}</th>
+                                    {tableHead.slice(1).map((x) => (
+                                        <th key={x} className="tableHeaderCell">{x}</th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {tableRows.map((r) => (
+                                    <tr key={r[0]}>
+                                        <th className="firstColumn">{r[0]}</th> 
+                                        {r.slice(1).map((x, i) => (
+                                            <td key={i} className="tableValueCell">{x}</td>
+                                        ))}
+                                    </tr>
                                 ))}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <br></br>
+
+                    <div id="buttonOuter">
+                        <div className="buttonDiv">
+                            <label>Show More Timesheets?  </label>
+                            <button onClick={() => setColumnNum(columnNum + 3)}>Show</button>
+                        </div>
+                        <div className="buttonDiv">
+                            <label>Reset  </label>
+                            <button onClick={() => setColumnNum(3)}>Reset</button>
+                        </div>
+                    </div>
+                    
+                </div>
             }
-            <div className="buttonDiv">
-                <label>Show More Timesheets?</label>
-                <button onClick={() => setColumnNum(columnNum + 3)}>Show</button>
-            </div>
-            <div className="buttonDiv">
-                <label>Reset</label>
-                <button onClick={() => setColumnNum(3)}>Reset</button>
-            </div>
+
         </div>
     )
 }

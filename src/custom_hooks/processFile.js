@@ -1,5 +1,9 @@
 function processFile(data) {
 
+    // cut extra rows
+    // populate object
+    // create optional date sort function, can be added into the flow easily later if needed
+
     function cutExtraData(data) {
         return data.split("\n").slice(2, -4).map((row) => {
             let fullSplit = row.split(",")
@@ -48,7 +52,6 @@ function processFile(data) {
                 totaledArr.push({"proj": row[0], "users": [{"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}]}], "timeSheets": [row[2]]})
             }
         })
-
         return totaledArr
     }
 
