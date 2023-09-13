@@ -4,7 +4,7 @@ function ResultTable({tableData}) {
 
     const [projIndex, setProjIndex] = useState(-1)
     const [columnNum, setColumnNum] = useState(3)
-    const [showIdle, setShowIdle] = useState(false)
+    const [showIdle, setShowIdle] = useState(false) // possible to only show users who have logged non-zero values within 2 timesheets of display period
 
     let selectedP = tableData[projIndex]
 
@@ -24,9 +24,12 @@ function ResultTable({tableData}) {
     }
 
     if (projIndex >= 0) {
-        let timesheets = selectedP["timeSheets"].slice(0, columnNum)
+        let timesheets = selectedP["timeSheets"].slice(0, columnNum + 2) // calculates enough values to determine idle, display filters further down below in JSX
         tableHead = ["Users", ...timesheets]
         tableRows = selectedP["users"].map((user) => [user["userName"], ...timesheets.map((sheet) => tableHelper(sheet, user))])
+        if (!showIdle) {
+            tableRows = tableRows.filter((r) => r.slice(1).reduce((a, c) => a + parseInt(c), 0) > 0)
+        }
     }
 
     return (
@@ -38,6 +41,7 @@ function ResultTable({tableData}) {
                     onChange={(e) => {
                         setProjIndex(e.target.value)
                         setColumnNum(3)
+                        setShowIdle(false)
                     }} 
                     value={projIndex}
                 >
@@ -55,7 +59,7 @@ function ResultTable({tableData}) {
                             <thead>
                                 <tr>
                                     <th className="firstColumn">{tableHead[0]}</th>
-                                    {tableHead.slice(1).map((x) => (
+                                    {tableHead.slice(1, columnNum + 1).map((x) => (
                                         <th key={x} className="tableHeaderCell">{x}</th>
                                     ))}
                                 </tr>
@@ -64,7 +68,7 @@ function ResultTable({tableData}) {
                                 {tableRows.map((r) => (
                                     <tr key={r[0]}>
                                         <th className="firstColumn">{r[0]}</th> 
-                                        {r.slice(1).map((x, i) => (
+                                        {r.slice(1, columnNum + 1).map((x, i) => (
                                             <td key={i} className={x > 0 ? "positiveCell tableValueCell" : "zeroCell tableValueCell"}>{x}</td>
                                         ))}
                                     </tr>
@@ -77,8 +81,12 @@ function ResultTable({tableData}) {
 
                     <div id="buttonOuter">
                         <div className="buttonDiv">
+                            <label>Toggle Show Idle Users?  </label>
+                            <button onClick={() => setShowIdle(!showIdle)}>{!showIdle ? "Show" : "Hide"}</button>
+                        </div>
+                        <div className="buttonDiv">
                             <label>Show More Timesheets?  </label>
-                            <button onClick={() => setColumnNum(columnNum + 3)}>Show</button>
+                            <button onClick={() => setColumnNum(columnNum + 3)}>More</button>
                         </div>
                         <div className="buttonDiv">
                             <label>Reset  </label>
