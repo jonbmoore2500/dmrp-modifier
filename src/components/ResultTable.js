@@ -69,7 +69,7 @@ function ResultTable({tableData}) {
                                     <tr key={r[0]}>
                                         <th className="firstColumn">{r[0]}</th> 
                                         {r.slice(1, columnNum + 1).map((x, i) => (
-                                            <td key={i} className={x > 0 ? "positiveCell tableValueCell" : "zeroCell tableValueCell"}>{x}</td>
+                                            <td key={i} className={parseFloat(x) > 0 ? "positiveCell tableValueCell" : "zeroCell tableValueCell"}>{x}</td>
                                         ))}
                                     </tr>
                                 ))}
