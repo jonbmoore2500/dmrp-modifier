@@ -16,7 +16,8 @@ function CSVImport({setData}) {
         if (file) {
             fileReader.onload = function (e) {
                 const csvOutput = e.target.result 
-                setData(processFile(csvOutput))
+                console.log(processFile(csvOutput))
+                // setData(processFile(csvOutput))
             }
             fileReader.readAsText(file)
         } else {

@@ -6,10 +6,14 @@ function processFile(data) {
     // sort names alphabetically
 
     function cutExtraData(data) {
-        return data.split("\n").slice(2, -4).map((row) => {
-            let fullSplit = row.split(",")
-            return [fullSplit[0], (fullSplit[1] + "," + fullSplit[2]).slice(1, -1), fullSplit[3], parseFloat(fullSplit[5])]
-        })
+        let splitRows = data.split("\n")
+        return splitRows.reduce(function (array, element) {
+            if (element[3] === "-") { // might need to determine more thorough check on useful rows than this
+                let rowSplit = element.split(",")
+                array.push([rowSplit[0], (rowSplit[1] + "," + rowSplit[2]).slice(1, -1), rowSplit[3], parseFloat(rowSplit[5])])
+            }
+            return array
+        }, [])
     }
 
     function createProjObj(data) { // absolutely reformat and break out smaller functions, works for the time being
@@ -42,7 +46,7 @@ function processFile(data) {
                     } else { // timesheet does not exist, create it
                         totaledArr[i0]["users"][i1]["timeSheets"] = [{"sheetTitle": row[2], "hours": row[3]}, ...totaledArr[i0]["users"][i1]["timeSheets"]]
                     }
-                } else { // user does not yet exist in project object, adds user to project object
+                } else { // user does not yet exist in project object, adds user to project object alphabetically
                     totaledArr[i0]["users"] = [...totaledArr[i0]["users"], {"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}]}].sort((a, b) => {
                         if (a["userName"] < b["userName"]) {
                             return -1
