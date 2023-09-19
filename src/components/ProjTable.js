@@ -7,6 +7,7 @@ function ProjTable({project}) {
 
     let tableHead = []
     let tableRows = []
+    let totalRow = ["Total Hours:"]
 
     function tableHelper(sheet, user) {
         let value = "0"
@@ -70,6 +71,8 @@ function ProjTable({project}) {
     if (!showIdle) {
         tableRows = tableRows.filter((r) => r.slice(1).reduce((a, c) => a + parseInt(c), 0) > 0)
     }
+    tableRows.reduce((prev, next) => next.map((_, i) => (prev[i] || []).concat(next[i])), []).slice(1)
+        .forEach((week) => totalRow.push(week.reduce((sum, num) => sum + parseFloat(num), 0.0))) // transposes tableRows arr, sums up each column and pushes to totalRow
 
     return (
         <div>
@@ -107,6 +110,12 @@ function ProjTable({project}) {
                                 ))}
                             </tr>
                         ))}
+                        <tr className="totalRow">
+                            <th className="firstColumn">{totalRow[0]}</th>
+                            {totalRow.slice(1, columnNum + 1).map((x, i) => (
+                                <td key={i}>{x}</td>
+                            ))}
+                        </tr>
                     </tbody>
                 </table>
             </div>

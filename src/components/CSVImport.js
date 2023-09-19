@@ -11,7 +11,6 @@ function CSVImport({setData, setTitle}) {
 
     function handleOnChange(e) {
         setFile(e.target.files[0])
-        setTitle(e.target.files[0].name)
     }
 
     function handleOnSubmit(e) {
@@ -19,11 +18,14 @@ function CSVImport({setData, setTitle}) {
         if (file) {
             fileReader.onload = function (e) {
                 const csvOutput = e.target.result 
-                // console.log(processFile(csvOutput))
                 setData(processFile(csvOutput))
+                // console.log(e.target.result)
+                // e.target.files[0].name
             }
             fileReader.readAsText(file)
         } else {
+            setData([])
+            setTitle("")
             console.log("Please select a file")
         }
     }
