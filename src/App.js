@@ -8,12 +8,13 @@ import ResultTableCont from './components/ResultTableCont';
 function App() {
   
   const [processedData, setProcessedData] = useState([])
+  const [dataTitle, setDataTitle] = useState("")
 
 
   return (
     <div className="App">
-      <Header />
-      <CSVImport setData={setProcessedData}/>
+      <Header dataTitle={dataTitle}/>
+      <CSVImport setData={setProcessedData} setTitle={setDataTitle}/>
       {processedData.length > 0 ? <ResultTableCont tableData={processedData}/> : null}
       {/* <ExportForm /> */}
     </div>

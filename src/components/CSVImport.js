@@ -1,7 +1,9 @@
 import React, {useState} from "react"
 import processFile from "../custom_hooks/processFile"
 
-function CSVImport({setData}) {
+function CSVImport({setData, setTitle}) {
+
+    // turn into modal? just display file title in header?
 
     const [file, setFile] = useState(null)
 
@@ -9,6 +11,7 @@ function CSVImport({setData}) {
 
     function handleOnChange(e) {
         setFile(e.target.files[0])
+        setTitle(e.target.files[0].name)
     }
 
     function handleOnSubmit(e) {
