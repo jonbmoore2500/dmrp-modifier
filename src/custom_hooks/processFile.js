@@ -13,6 +13,7 @@ function processFile(data) {
 
     function createProjObj(data) { // absolutely reformat and break out smaller functions, works for the time being
         // make helper function to sort dates - currentyl sorted due to csv format, should still build function
+        // make helper alphabetize function
 
         let totaledArr = []
 
@@ -55,7 +56,13 @@ function processFile(data) {
                     totaledArr[i0]["timeSheets"] = [row[2], ...totaledArr[i0]["timeSheets"]]
                 }
             } else { // object with project name does not yet exist, creates project object with first user and timesheet
-                totaledArr.push({"proj": row[0], "users": [{"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}]}], "timeSheets": [row[2]]})
+                totaledArr = [...totaledArr, ({"proj": row[0], "users": [{"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}]}], "timeSheets": [row[2]]})].sort((a, b) => {
+                    if (a["proj"] < b["proj"]) {
+                        return -1
+                    } else {
+                        return 1
+                    }
+                })
             }
         })
         return totaledArr

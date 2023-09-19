@@ -1,6 +1,6 @@
 import React, {useState} from "react"
 
-function ResultTable({tableData}) {
+function ResultTableCont({tableData}) {
 
     const [projIndex, setProjIndex] = useState(-1)
     const [columnNum, setColumnNum] = useState(3)
@@ -101,4 +101,4 @@ function ResultTable({tableData}) {
     )
 }
 
-export default ResultTable
+export default ResultTableCont
