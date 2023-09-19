@@ -17,7 +17,18 @@
 #tableOuter {
   width: 80%;
   margin-left: 10%;
-  overflow-x: auto
+  overflow-x: auto;
+}
+
+.tableHead {
+  margin-left:10%;
+  display: flex;
+  flex-direction: row;
+}
+.buttonDiv {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
 }
 
 table {

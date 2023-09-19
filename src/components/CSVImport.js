@@ -1,7 +1,9 @@
 import React, {useState} from "react"
 import processFile from "../custom_hooks/processFile"
 
-function CSVImport({setData}) {
+function CSVImport({setData, setTitle}) {
+
+    // turn into modal? just display file title in header?
 
     const [file, setFile] = useState(null)
 
@@ -16,11 +18,14 @@ function CSVImport({setData}) {
         if (file) {
             fileReader.onload = function (e) {
                 const csvOutput = e.target.result 
-                // console.log(processFile(csvOutput))
                 setData(processFile(csvOutput))
+                // console.log(e.target.result)
+                // e.target.files[0].name
             }
             fileReader.readAsText(file)
         } else {
+            setData([])
+            setTitle("")
             console.log("Please select a file")
         }
     }
