@@ -113,7 +113,7 @@ function ProjTable({project}) {
                         <tr className="totalRow">
                             <th className="firstColumn">{totalRow[0]}</th>
                             {totalRow.slice(1, columnNum + 1).map((x, i) => (
-                                <td key={i}>{x}</td>
+                                <td key={i} className="totalCell">{x}</td>
                             ))}
                         </tr>
                     </tbody>
