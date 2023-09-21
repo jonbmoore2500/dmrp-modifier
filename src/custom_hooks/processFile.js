@@ -5,7 +5,7 @@ function processFile(data) {
         return splitRows.reduce(function (array, element) {
             if (element.slice(0, 5).includes("-")) { // might need to determine more thorough check on useful rows than this
                 let fullSplit = element.replace(/"/g, "").split(",")
-                array.push([fullSplit[0], (fullSplit[1] + "," + fullSplit[2]), fullSplit[3], parseFloat(fullSplit[5])])
+                array.push([fullSplit[0], (fullSplit[1] + "," + fullSplit[2]), fullSplit[3], parseFloat(fullSplit[5]), parseFloat(fullSplit[7])])
             }
             return array
         }, [])
@@ -16,6 +16,23 @@ function processFile(data) {
         // make helper alphabetize function
 
         let totaledArr = []
+
+
+        // function handleSort(arr, sortBy) {
+
+        // }
+        // function handleAdj() {
+
+        // }
+        // function handleSheet() {
+            
+        // }
+        // function handleProj() {
+            
+        // }
+        // function handleUser() {
+
+        // }
 
         data.forEach((row) => {
             let i0 = totaledArr.findIndex(element => {
@@ -42,8 +59,13 @@ function processFile(data) {
                     } else { // timesheet does not exist, create it
                         totaledArr[i0]["users"][i1]["timeSheets"] = [{"sheetTitle": row[2], "hours": row[3]}, ...totaledArr[i0]["users"][i1]["timeSheets"]]
                     }
+
+                    if (row[4] > totaledArr[i0]["users"][i1]["rate"]) { // updates rate if needed
+                        totaledArr[i0]["users"][i1]["rate"] = row[4]
+                    }
+                    
                 } else { // user does not yet exist in project object, adds user to project object
-                    totaledArr[i0]["users"] = [...totaledArr[i0]["users"], {"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}]}].sort((a, b) => {
+                    totaledArr[i0]["users"] = [...totaledArr[i0]["users"], {"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}], "rate": row[4]}].sort((a, b) => {
                         if (a["userName"] < b["userName"]) {
                             return -1
                         } else {
@@ -56,7 +78,7 @@ function processFile(data) {
                     totaledArr[i0]["timeSheets"] = [row[2], ...totaledArr[i0]["timeSheets"]]
                 }
             } else { // object with project name does not yet exist, creates project object with first user and timesheet
-                totaledArr = [...totaledArr, ({"proj": row[0], "users": [{"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}]}], "timeSheets": [row[2]]})].sort((a, b) => {
+                totaledArr = [...totaledArr, ({"proj": row[0], "users": [{"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}], "rate": row[4]}], "timeSheets": [row[2]]})].sort((a, b) => {
                     if (a["proj"] < b["proj"]) {
                         return -1
                     } else {
