@@ -1,78 +1,32 @@
 import React, {useState} from "react"
+import popTable from "../custom_hooks/popTable"
 
 function ProjTable({project}) {
 
     const [columnNum, setColumnNum] = useState(3)
     const [showIdle, setShowIdle] = useState(false)
+    const [showRates, setShowRates] = useState(false)
 
-    let tableHead = []
-    let tableRows = []
-    let totalRow = ["Total Hours:"]
+    const fullTableObj = popTable(project) // populates master table object. manipulated below
 
-    function tableHelper(sheet, user) {
-        let value = "0"
-        const i = user["timeSheets"].findIndex(element => element["sheetTitle"].includes(sheet))    
-        if (i >= 0) {
-            value = String(user["timeSheets"][i]["hours"])
-            if (user["timeSheets"][i]["sheetTitle"].includes("Adjusted")) {
-                value = value + " (Adj.)"
-            }
-        }
-        return value
-    }
+    let tableHead = [...fullTableObj["head"]]
+    let tableRows = [...fullTableObj["rows"]]
+    let totalRow = [...fullTableObj["totals"]]
 
-    function dateMath(date) {
-        let day = parseInt(date.slice(3, 5), 10)
-        let month = parseInt(date.slice(0, 2), 10)
-        let year = parseInt(date.slice(6), 10)
-
-        function handleAdd2(monthDays) {
-            const newDay = day + 2
-            if (newDay > monthDays) {
-                day = newDay - monthDays
-                month += 1
-            } else {
-                day = newDay
-            }
-        }
-
-        if (month === 2) { // feb
-            let daysTotal = 28
-            if (year % 4 === 0) { // handles leap years, will break in 2100
-                daysTotal += 1
-            }
-            handleAdd2(daysTotal)
-        } else if ([1, 3, 5, 7, 8, 10, 12].includes(month)) { // 31 day months
-            handleAdd2(31)
-        } else { // 30 day months
-            handleAdd2(30)
-        }
-
-        if (month > 12) {
-            month = 1
-            year += 1
-        }
-
-        return month + "/" + day + "/" + year
-    }
-
-    function tsHelper(oldTitle) {
-        let month = ""
-        if (oldTitle.length > 20) {
-            month = oldTitle.slice(20)
-        }
-        let newTitle = dateMath(oldTitle.slice(0, 8))
-        return newTitle + month // figure out how to line break month for uniform column width
-    }
-
-    let timesheets = project["timeSheets"].slice(0, columnNum + 2) // calculates enough values to determine idle, display filters further down below in JSX
-    tableHead = ["Users", ...timesheets.map((ts) => tsHelper(ts))]
-    tableRows = project["users"].map((user) => [user["userName"], ...timesheets.map((sheet) => tableHelper(sheet, user))])
     if (!showIdle) {
-        tableRows = tableRows.filter((r) => r.slice(1).reduce((a, c) => a + parseInt(c), 0) > 0)
+        tableRows = tableRows.filter((r) => r.slice(1, columnNum + 2).reduce((a, c) => a + parseInt(c), 0) > 0)
     }
-    tableRows.reduce((prev, next) => next.map((_, i) => (prev[i] || []).concat(next[i])), []).slice(1)
-        .forEach((week) => totalRow.push(week.reduce((sum, num) => sum + parseFloat(num), 0.0))) // transposes tableRows arr, sums up each column and pushes to totalRow
+
+    if (!showRates) {
+        tableHead = tableHead.filter((_, i) => i % 2 === 0)
+        tableRows = tableRows.map(r => r.filter((_, i) => i % 2 === 0))
+        totalRow = totalRow.filter((_, i) => i % 2 === 0)
+    }
+
+    function handleRatesToggle(showBool) {
+        setShowRates(showBool)
+        setColumnNum(columnNum * (showBool ? 2 : .5))
+    }
 
     return (
         <div>
@@ -90,14 +44,18 @@ function ProjTable({project}) {
                     <label>Reset  </label>
                     <button onClick={() => setColumnNum(3)}>Reset</button>
                 </div>
+                <div className="buttonDiv">
+                    <label>Show Rates?  </label>
+                    <button onClick={() => handleRatesToggle(!showRates)}>{!showRates ? "Show" : "Hide"}</button>
+                </div>
             </div>
             <div id="tableOuter">
                 <table>
                     <thead>
                         <tr>
                             <th className="firstColumn">{tableHead[0]}</th>
-                            {tableHead.slice(1, columnNum + 1).map((x) => (
-                                <th key={x} className="tableHeaderCell">{x}</th>
+                            {tableHead.slice(1, columnNum + 2).map((x, i) => (
+                                <th key={x + i} className="tableHeaderCell">{x}</th>
                             ))}
                         </tr>
                     </thead>
@@ -105,15 +63,15 @@ function ProjTable({project}) {
                         {tableRows.map((r) => (
                             <tr key={r[0]}>
                                 <th className="firstColumn">{r[0]}</th> 
-                                {r.slice(1, columnNum + 1).map((x, i) => (
-                                    <td key={i} className={parseFloat(x) > 0 ? "positiveCell tableValueCell" : "zeroCell tableValueCell"}>{x}</td>
+                                {r.slice(1, columnNum + 2).map((x, i) => (
+                                    <td key={i*100} className={parseFloat(x) > 0 ? "positiveCell tableValueCell" : "zeroCell tableValueCell"}>{x}</td>
                                 ))}
                             </tr>
                         ))}
                         <tr className="totalRow">
                             <th className="firstColumn">{totalRow[0]}</th>
-                            {totalRow.slice(1, columnNum + 1).map((x, i) => (
-                                <td key={i} className="totalCell">{x}</td>
+                            {totalRow.slice(1, columnNum + 2).map((x, i) => (
+                                <td key={i*523} className="totalCell">{x}</td>
                             ))}
                         </tr>
                     </tbody>
