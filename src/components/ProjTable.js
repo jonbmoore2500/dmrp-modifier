@@ -27,6 +27,11 @@ function ProjTable({project}) {
         setShowRates(showBool)
         setColumnNum(columnNum * (showBool ? 2 : .5))
     }
+    function handleReset() {
+        setColumnNum(3)
+        setShowIdle(false)
+        setShowRates(false)
+    }
 
     return (
         <div>
@@ -41,37 +46,39 @@ function ProjTable({project}) {
                     <button onClick={() => setColumnNum(columnNum + 3)}>More</button>
                 </div>
                 <div className="buttonDiv">
-                    <label>Reset  </label>
-                    <button onClick={() => setColumnNum(3)}>Reset</button>
-                </div>
-                <div className="buttonDiv">
                     <label>Show Rates?  </label>
                     <button onClick={() => handleRatesToggle(!showRates)}>{!showRates ? "Show" : "Hide"}</button>
+                </div>
+                <div className="buttonDiv">
+                    <label>Reset  </label>
+                    <button onClick={() => handleReset()}>Reset</button>
                 </div>
             </div>
             <div id="tableOuter">
                 <table>
                     <thead>
                         <tr>
-                            <th className="firstColumn">{tableHead[0]}</th>
+                            <th className="firstColumn headRow">{tableHead[0]}</th>
                             {tableHead.slice(1, columnNum + 2).map((x, i) => (
-                                <th key={x + i} className="tableHeaderCell">{x}</th>
+                                <th key={x + i} className="tableHeaderCell">{(showRates && i%2 === 0 && i > 0) ? null : x}</th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
                         {tableRows.map((r) => (
                             <tr key={r[0]}>
-                                <th className="firstColumn">{r[0]}</th> 
+                                <th className="firstColumn tableBody">{r[0]}</th> 
                                 {r.slice(1, columnNum + 2).map((x, i) => (
-                                    <td key={i*100} className={parseFloat(x) > 0 ? "positiveCell tableValueCell" : "zeroCell tableValueCell"}>{x}</td>
+                                    <td key={i} className={parseFloat(x) > 0 ? ((showRates && i%2 === 1) ? "positiveCell tableValueCell dollar" : "positiveCell tableValueCell") : "zeroCell tableValueCell"}>
+                                        {(showRates && i%2 === 0) ? "$" + x : x}
+                                    </td>
                                 ))}
                             </tr>
                         ))}
                         <tr className="totalRow">
-                            <th className="firstColumn">{totalRow[0]}</th>
+                            <th className="firstColumn tableTotal">{totalRow[0]}</th>
                             {totalRow.slice(1, columnNum + 2).map((x, i) => (
-                                <td key={i*523} className="totalCell">{x}</td>
+                                <td key={-i} className="totalCell">{(showRates && i%2 === 0 && i > 0) ? "$" + x : x}</td>
                             ))}
                         </tr>
                     </tbody>

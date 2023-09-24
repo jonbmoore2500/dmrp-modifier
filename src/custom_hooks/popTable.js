@@ -61,7 +61,7 @@ function popTable(project) {
                 if (i%2 === 0) {
                     return hours
                 } else {
-                    return parseFloat(hours) * parseFloat(user["rate"])
+                    return String(parseFloat(hours) * parseFloat(user["rate"]))
                 }
             })]
         })
