@@ -1,16 +1,16 @@
 .App {
   text-align: center;
-  background-color: darkgrey;
+  background-color: lightgrey;
   height:100%;
   width: 100%;
   position: absolute;
-  overflow: auto
+  overflow: auto;
 }
 
 #appHeader {
   text-align: center;
   font-style: bold;
-  color: firebrick;
+  color: green;
   height: 8%;  
 }
 
@@ -31,35 +31,51 @@
   padding-left: 10px;
 }
 
+/* table main */
 table {
   border-collapse: collapse;
   width: max-content
 }
+table th, td {
+  border: 1px solid black;
+  padding-left: 5px;
+  padding-right: 5px;
+}
 
-th:first-child {
+/* table head */
+thead tr {
+  background-color: rgba(2, 147, 2, 0.568);
+}
+thead tr:first-child {
+  border-bottom: 4px solid #000;
+}
+
+/* table body */
+tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.180)
+}
+
+/* table last */
+
+/* first column */
+
+.firstColumn:first-child {
   position: sticky; 
   left: 0; 
   z-index: 1;
   opacity: 100; 
-  background-color: rgb(158, 54, 54);
+  background-color: rgb(58, 192, 0);
+  border-right: 2px solid #000;
 }
 
-thead tr {
-  background-color: rgba(178, 34, 34, 0.609);
+tbody tr:last-child {
+  border-top: 3px solid #000;
+  background-color: rgba(2, 147, 2, 0.382);
 }
 
-thead th {
-  border: 1px solid black;
-  padding: 5px;
-}
+/* end */
 
-tbody tr:nth-child(odd) {
-  background-color: rgba(0, 0, 0, 0.251)
-}
 
-tbody th, td {
-  border: 1px solid black;
-}
 
 .positiveCell{
   font-weight: bold;
