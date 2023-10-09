@@ -10,7 +10,7 @@ function ResultTableCont({tableData}) {
             <br></br>
             <div>
                 {tableData.map((proj) => (
-                    <div key={proj.proj}>
+                    <div key={proj.proj} id={proj.proj}>
                         <ProjTable project={proj}/>
                         <br></br>
                     </div>
