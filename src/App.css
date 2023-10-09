@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  background-color: lightgrey;
+  background-color: rgb(227, 227, 227);
   height:100%;
   width: 100%;
   position: absolute;
@@ -32,55 +32,87 @@
 }
 
 /* table main */
-table {
+.mainTable {
   border-collapse: collapse;
-  width: max-content
+  width: max-content;
+  border: 2px solid black
 }
-table th, td {
+.mainTable th {
   border: 1px solid black;
-  padding-left: 5px;
-  padding-right: 5px;
 }
+.mainTable td {
+  border: 1px solid black;
+}
+
+
 
 /* table head */
 thead tr {
-  background-color: rgba(2, 147, 2, 0.568);
+  background-color: #C6E0B4;
 }
-thead tr:first-child {
-  border-bottom: 4px solid #000;
+thead tr {
+  border-bottom: 3px solid #000;
 }
 
 /* table body */
-tbody tr:nth-child(even) {
-  background-color: rgba(0, 0, 0, 0.180)
+tbody tr {
+  background-color: white
 }
 
 /* table last */
 
 /* first column */
+.sticky{
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: #A9D08E;
+}
+.stickySpan{
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: #A9D08E;
 
-.firstColumn:first-child {
+}
+.rates{
+  position: sticky;
+  z-index: 1;
+  background-color: #A9D08E;
+}
+
+
+/* .firstColumn {
   position: sticky; 
   left: 0; 
   z-index: 1;
   opacity: 100; 
-  background-color: rgb(58, 192, 0);
+  background-color: #A9D08E;
   border-right: 2px solid #000;
+  border-left: 2px solid black;
+  font-weight: bold
+} */
+
+.username{
+  text-align: left;
+  font-weight: bold
 }
 
 tbody tr:last-child {
   border-top: 3px solid #000;
-  background-color: rgba(2, 147, 2, 0.382);
+  background-color: #C6E0B4;
 }
+
+
 
 /* end */
 
 
 
 .positiveCell{
-  font-weight: bold;
+  font-weight:550;
   color:black
 }
 .zeroCell{
-  color:rgb(158, 54, 54)
+  color:rgba(0, 0, 0, 0.546)
 }

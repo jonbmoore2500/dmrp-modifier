@@ -1,5 +1,7 @@
 function popTable(project) {
 
+    console.log(project)
+
     let tableHead = []
     let tableRows = []
     let totalRow = ["Totals:", ""]
@@ -53,7 +55,7 @@ function popTable(project) {
 
     let timesheets = project["timeSheets"].map(ts => [ts, ts]).flat()
 
-    tableHead = ["Users", "Rates", ...timesheets.map((ts) => dateMath(ts.slice(0, 8)) + ts.slice(20))]
+    tableHead = ["User", ...project["timeSheets"].map((ts) => dateMath(ts.slice(0, 8)) + ts.slice(20))]
 
     tableRows = project["users"].map((user) => {
         return [user["userName"], user["rate"], ...timesheets.map((sheet, i) => {
