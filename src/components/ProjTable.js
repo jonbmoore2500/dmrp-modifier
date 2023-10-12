@@ -4,6 +4,7 @@ import TableButtons from "./TableButtons"
 
 function ProjTable({project}) {
 
+    // generating table with contents
     const [weeksNum, setWeeksNum] = useState(4)
     const [showIdle, setShowIdle] = useState(false)
     const [showRates, setShowRates] = useState(false)
@@ -35,6 +36,103 @@ function ProjTable({project}) {
             setCol2Left(col1width)
         }
     }, [showRates, weeksNum, showIdle])
+    // end generating table with contents
+
+
+    // handle copy content
+    let isSelecting = false
+    let startCell = null
+    let endCell = null
+
+    const [copied, setCopied] = useState(false)
+
+    useEffect(() => {
+        let timer = setTimeout(() => setCopied(false), 3000)
+        return () => {
+            clearTimeout(timer)
+        }
+    }, [copied])
+
+    // const table = document.getElementById(`${project.proj}table`)
+
+    function handleMouseDown(cell) {
+        isSelecting = true
+        startCell = cell
+        setCopied(false)
+    }
+
+    function handleMouseOver(cell) {
+        const table = document.getElementById(`${project.proj}table`)
+        const allCells = Array.from(table.getElementsByClassName('data'))
+        if (!isSelecting) return 
+        const corners = [startCell.split("x"), cell.split("x")].sort((a, b) => {
+            if (a[0] > b[0]) {
+                return 1
+            } else if (a[0] < b[0]) {
+                return -1
+            } else {
+                if (a[1] > b[1]) {
+                    return 1
+                } else {
+                    return -1
+                }
+            }
+        })
+        allCells.forEach((cell) => {
+            let split = cell.id.split("x")
+            if (split[0] >= corners[0][0] && split[0] <= corners[1][0] && split[1] >= corners[0][1] && split[1] <= corners[1][1]) {
+                cell.classList.add('selected')
+            } else {
+                cell.classList.remove('selected')
+            }
+        })
+    }
+
+    function handleClipboard() {
+        const table = document.getElementById(`${project.proj}table`)
+        const corners = [startCell.split("x"), endCell.split("x")].sort((a, b) => {
+            if (a[0] > b[0]) {
+                return 1
+            } else if (a[0] < b[0]) {
+                return -1
+            } else {
+                if (a[1] > b[1]) {
+                    return 1
+                } else {
+                    return -1
+                }
+            }
+        })
+        const rowLength = corners[1][1] - corners[0][1] + 1
+        const selecteds = Array.from(table.getElementsByClassName('selected')).map(x => x.innerHTML)
+        const selectedRows = []
+        for (let i = 0; i < selecteds.length; i += rowLength) {
+            const row = selecteds.slice(i, i + rowLength).join("\t")
+            selectedRows.push(row)
+        }
+        navigator.clipboard.writeText(selectedRows.join("\n")).then(function(x) {
+            handleCancel()
+            setCopied(true)
+        })
+    }
+
+    function handleCancel() {
+        const table = document.getElementById(`${project.proj}table`)
+        const allCells = Array.from(table.getElementsByClassName('data'))
+        startCell = null
+        endCell = null
+        allCells.forEach((cell) => {
+            cell.classList.remove('selected')
+        })
+        setCopied(false)
+    }
+
+    function handleMouseUp(cell) {
+        isSelecting = false
+        endCell = cell
+    }
+    // end handle copy content
+
 
     return (
         <div>
@@ -50,7 +148,7 @@ function ProjTable({project}) {
                 />
             </div>
             <div id="tableOuter">
-                <table className="mainTable">
+                <table className="mainTable" id={`${project.proj}table`}>
                     <thead>
                         <tr>
                             <th className="stickySpan" colSpan={showRates ? "2" : "1"}>{tableHead[0]}</th>
@@ -67,12 +165,19 @@ function ProjTable({project}) {
                         </tr>
                     </thead>
                     <tbody>
-                        {tableRows.map((r) => (
+                        {tableRows.map((r, ind) => (
                             <tr key={r[0]}>
-                                <td className="sticky">{r[0]}</td>
-                                {showRates ? <td className="rates" style={{left: col2Left}}>${r[1]}</td> : null} 
+                                <td className="sticky userName">{r[0]}</td>
+                                {showRates ? <td className="rates userRate" style={{left: col2Left}}>${r[1]}</td> : null} 
                                 {r.slice((showRates ? 2 : 1), (weeksNum + 1) * (showRates ? 2 : 1)).map((x, i) => (
-                                    <td key={i} className={parseFloat(x) > 0 ? "positiveCell " : "zeroCell "}>
+                                    <td 
+                                        key={i} 
+                                        id={`${ind}x${i}`}
+                                        className={parseFloat(x) > 0 ? "positiveCell data" : "zeroCell data"}
+                                        onMouseDown={(e) => handleMouseDown(e.target.id)}
+                                        onMouseUp={(e) => handleMouseUp(e.target.id)}
+                                        onMouseOver={(e) => handleMouseOver(e.target.id)}
+                                    >
                                         {(showRates && i%2 === 1) ? "$" + x : x }
                                     </td>
                                 ))}
@@ -87,6 +192,11 @@ function ProjTable({project}) {
                         </tr>
                     </tbody>
                 </table>
+                <div style={{display: "flex"}}>
+                    <button onClick={() => handleClipboard()}>Copy to Clipboard</button>
+                    <button onClick={() => handleCancel()}>Cancel Selection</button>
+                    {copied ? <p>Copied</p> : null}
+                </div>
             </div>
         </div>
     )

@@ -2,8 +2,6 @@ import React from "react"
 
 function TableButtons({setShowIdle, showIdle, setWeeksNum, weeksNum, setShowRates, showRates}) {
 
-
-
     function handleReset() {
         setWeeksNum(4)
         setShowIdle(false)
