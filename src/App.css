@@ -10,25 +10,103 @@
 #appHeader {
   text-align: center;
   font-style: bold;
-  color: green;
-  height: 8%;  
+  margin: 10px 0px;
+  display: flex
 }
 
+#titleDiv{
+  color: green;
+  flex:1;
+  border-right:3px solid rgba(0, 128, 0, 0.462);
+  margin: 0px 5%
+}
+#importForm{
+  flex:1;
+  text-align: left;
+  /* margin: 0px 5% */
+}
+#importForm h4{
+  margin-top: 12px;
+}
+#fileInput{
+  width: 70%
+}
+#submitBtnDiv{
+  display:flex;
+  /* vertical-align: center; */
+}
+#submitBtnDiv p{
+  margin-top: 10px;
+  margin-bottom: 0px;
+  padding-top:1px;
+  padding-left:5px;
+  vertical-align: center;
+  color:firebrick;
+  font-weight: bold
+}
+#fileInputBtn{
+  align-items: left;
+  margin-top:10px;
+}
+#headerLineBreak{
+  align-items: center;
+  border-bottom: 3px solid rgba(0, 128, 0, 0.462);
+  display: flex;
+  margin: 0px 16px;
+  text-align: center;
+}
+
+.projMasterDiv{
+  /* margin-bottom:20px; */
+  margin: 15px 10%;
+  border-bottom: 3px solid rgba(0, 128, 0, 0.462);
+}
 #tableOuter {
-  width: 80%;
-  margin-left: 10%;
+  width: 100%;
+  margin-left: 5%;
   overflow-x: auto;
 }
 
 .tableHead {
-  margin-left:10%;
+  margin-left:5%;
+  margin-bottom:10px;
   display: flex;
   flex-direction: row;
+}
+.tableCaption{
+  border-right: 3px solid rgba(0, 128, 0, 0.462);
+  margin: 0;
+  padding: 20px
+}
+.buttonContainer{
+  display: grid;
+  gap:0px
 }
 .buttonDiv {
   display: flex;
   align-items: center;
   padding-left: 10px;
+}
+.buttonDiv label{
+  margin-right: 5px;
+  flex: 4;
+  text-align: right;
+}
+.buttonDiv button{
+  flex: 1;
+  width: 70px
+}
+#btn1{
+  grid-column-start:1;
+  grid-column-end: 2;
+  grid-row-start:1;
+  grid-row-end: 2
+}
+#btn2{
+  grid-column-start:2;
+  grid-column-end: 3;
+  grid-row-start:1;
+  grid-row-end: 2
 }
 
 /* table main */
@@ -51,14 +129,18 @@
 /* table head */
 thead tr {
   background-color: #C6E0B4;
-}
-thead tr {
   border-bottom: 3px solid #000;
+}
+thead tr th{
+  padding: 5px 10px
 }
 
 /* table body */
 tbody tr {
   background-color: white
+}
+tbody tr td{
+  padding: 2px 8px
 }
 
 /* table last */
@@ -86,16 +168,11 @@ tbody tr {
   font-weight: bold;
   text-align: left;
   background-color: #C6E0B4;
+  padding-right:10px
 }
 .userRate{
   font-weight: bold;
   background-color: #C6E0B4;
-}
-
-
-.username{
-  text-align: left;
-  font-weight: bold
 }
 
 tbody tr:last-child {
@@ -122,4 +199,21 @@ tbody tr:last-child {
 }
 .selected{
   background: rgba(52, 52, 255, 0.31);
+}
+.copyBtnsDiv{
+  display:flex;
+  padding-left:20%;
+  padding-top:10px;
+  width: 50%;
+  padding-bottom: 20px
+}
+.copyBtnsDiv button{
+  flex: 2;
+  margin: 0px 30px;
+}
+.copyBtnsDiv p{
+  flex: 1;
+  margin: 0;
+  vertical-align: center;
+  color: firebrick
 }

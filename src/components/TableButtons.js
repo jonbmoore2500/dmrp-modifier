@@ -10,19 +10,19 @@ function TableButtons({setShowIdle, showIdle, setWeeksNum, weeksNum, setShowRate
 
     return (
         <div className="buttonContainer">
-            <div className="buttonDiv">
+            <div className="buttonDiv" id="btn1">
                 <label>Toggle Idles?  </label>
                 <button onClick={() => setShowIdle(!showIdle)}>{!showIdle ? "Show" : "Hide"}</button>
             </div>
-            <div className="buttonDiv">
+            <div className="buttonDiv" id="btn2">
                 <label>More Weeks?  </label>
                 <button onClick={() => setWeeksNum(weeksNum + 3)}>More</button>
             </div>
-            <div className="buttonDiv">
+            <div className="buttonDiv" id="btn3">
                 <label>Show Rates?  </label>
                 <button onClick={() => setShowRates(!showRates)}>{!showRates ? "Show" : "Hide"}</button>
             </div>
-            <div className="buttonDiv">
+            <div className="buttonDiv" id="btn4">
                 <label>Reset  </label>
                 <button onClick={() => handleReset()}>Reset</button>
             </div>

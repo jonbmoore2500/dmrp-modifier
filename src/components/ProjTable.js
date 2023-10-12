@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react"
 import popTable from "../custom_hooks/popTable"
 import TableButtons from "./TableButtons"
+import BottomBtns from "./BottomBtns"
 
 function ProjTable({project}) {
 
@@ -47,13 +48,11 @@ function ProjTable({project}) {
     const [copied, setCopied] = useState(false)
 
     useEffect(() => {
-        let timer = setTimeout(() => setCopied(false), 3000)
+        let timer = setTimeout(() => setCopied(false), 2500)
         return () => {
             clearTimeout(timer)
         }
     }, [copied])
-
-    // const table = document.getElementById(`${project.proj}table`)
 
     function handleMouseDown(cell) {
         isSelecting = true
@@ -62,16 +61,17 @@ function ProjTable({project}) {
     }
 
     function handleMouseOver(cell) {
+        if (!isSelecting) return 
+
         const table = document.getElementById(`${project.proj}table`)
         const allCells = Array.from(table.getElementsByClassName('data'))
-        if (!isSelecting) return 
         const corners = [startCell.split("x"), cell.split("x")].sort((a, b) => {
-            if (a[0] > b[0]) {
+            if (parseInt(a[0]) > parseInt(b[0])) {
                 return 1
-            } else if (a[0] < b[0]) {
+            } else if (parseInt(a[0]) < parseInt(b[0])) {
                 return -1
             } else {
-                if (a[1] > b[1]) {
+                if (parseInt(a[1]) > parseInt(b[1])) {
                     return 1
                 } else {
                     return -1
@@ -80,7 +80,7 @@ function ProjTable({project}) {
         })
         allCells.forEach((cell) => {
             let split = cell.id.split("x")
-            if (split[0] >= corners[0][0] && split[0] <= corners[1][0] && split[1] >= corners[0][1] && split[1] <= corners[1][1]) {
+            if (split[0] >= parseInt(corners[0][0]) && split[0] <= parseInt(corners[1][0]) && split[1] >= parseInt(corners[0][1]) && split[1] <= parseInt(corners[1][1])) {
                 cell.classList.add('selected')
             } else {
                 cell.classList.remove('selected')
@@ -89,31 +89,33 @@ function ProjTable({project}) {
     }
 
     function handleClipboard() {
-        const table = document.getElementById(`${project.proj}table`)
-        const corners = [startCell.split("x"), endCell.split("x")].sort((a, b) => {
-            if (a[0] > b[0]) {
-                return 1
-            } else if (a[0] < b[0]) {
-                return -1
-            } else {
-                if (a[1] > b[1]) {
+        if (startCell) {
+            const table = document.getElementById(`${project.proj}table`)
+            const corners = [startCell.split("x"), endCell.split("x")].sort((a, b) => {
+                if (parseInt(a[0]) > parseInt(b[0])) {
                     return 1
-                } else {
+                } else if (parseInt(a[0]) < parseInt(b[0])) {
                     return -1
+                } else {
+                    if (parseInt(a[1]) > parseInt(b[1])) {
+                        return 1
+                    } else {
+                        return -1
+                    }
                 }
+            })
+            const rowLength = corners[1][1] - corners[0][1] + 1
+            const selecteds = Array.from(table.getElementsByClassName('selected')).map(x => x.innerHTML)
+            const selectedRows = []
+            for (let i = 0; i < selecteds.length; i += rowLength) {
+                const row = selecteds.slice(i, i + rowLength).join("\t")
+                selectedRows.push(row)
             }
-        })
-        const rowLength = corners[1][1] - corners[0][1] + 1
-        const selecteds = Array.from(table.getElementsByClassName('selected')).map(x => x.innerHTML)
-        const selectedRows = []
-        for (let i = 0; i < selecteds.length; i += rowLength) {
-            const row = selecteds.slice(i, i + rowLength).join("\t")
-            selectedRows.push(row)
+            navigator.clipboard.writeText(selectedRows.join("\n")).then(function(x) {
+                handleCancel()
+                setCopied(true)
+            })
         }
-        navigator.clipboard.writeText(selectedRows.join("\n")).then(function(x) {
-            handleCancel()
-            setCopied(true)
-        })
     }
 
     function handleCancel() {
@@ -135,16 +137,13 @@ function ProjTable({project}) {
 
 
     return (
-        <div>
+        <div className="projMasterDiv">
             <div className="tableHead">
-                <h4 id="tableCaption">{project.proj}</h4>
+                <h3 className="tableCaption">{project.proj}</h3>
                 <TableButtons 
-                    setShowIdle={setShowIdle}
-                    showIdle={showIdle}
-                    setWeeksNum={setWeeksNum}
-                    weeksNum={weeksNum}
-                    setShowRates={setShowRates}
-                    showRates={showRates}
+                    setShowIdle={setShowIdle} showIdle={showIdle}
+                    setWeeksNum={setWeeksNum} weeksNum={weeksNum}
+                    setShowRates={setShowRates} showRates={showRates}
                 />
             </div>
             <div id="tableOuter">
@@ -192,12 +191,8 @@ function ProjTable({project}) {
                         </tr>
                     </tbody>
                 </table>
-                <div style={{display: "flex"}}>
-                    <button onClick={() => handleClipboard()}>Copy to Clipboard</button>
-                    <button onClick={() => handleCancel()}>Cancel Selection</button>
-                    {copied ? <p>Copied</p> : null}
-                </div>
             </div>
+            <BottomBtns handleClipboard={handleClipboard} handleCancel={handleCancel} copied={copied}/>
         </div>
     )
 }

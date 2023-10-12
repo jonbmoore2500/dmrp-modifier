@@ -13,8 +13,11 @@ function App() {
 
   return (
     <div className="App">
-      <Header dataTitle={dataTitle}/>
-      <CSVImport setData={setProcessedData} setTitle={setDataTitle}/>
+      <div id="appHeader">
+        <Header dataTitle={dataTitle}/>
+        <CSVImport setData={setProcessedData} setTitle={setDataTitle}/>
+      </div>
+      <div id="headerLineBreak"></div>
       {processedData.length > 0 ? <ResultTableCont tableData={processedData}/> : null}
       {/* <ExportForm /> */}
     </div>

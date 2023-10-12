@@ -6,11 +6,13 @@ function CSVImport({setData, setTitle}) {
     // turn into modal? just display file title in header?
 
     const [file, setFile] = useState(null)
+    const [error, setError] = useState("")
 
     const fileReader = new FileReader()
 
     function handleOnChange(e) {
         setFile(e.target.files[0])
+        setError("")
     }
 
     function handleOnSubmit(e) {
@@ -19,21 +21,18 @@ function CSVImport({setData, setTitle}) {
             fileReader.onload = function (e) {
                 const csvOutput = e.target.result 
                 setData(processFile(csvOutput))
-                // console.log(e.target.result)
-                // e.target.files[0].name
             }
             fileReader.readAsText(file)
         } else {
             setData([])
             setTitle("")
-            console.log("Please select a file")
+            setError("Please select a valid file")
         }
     }
 
     return (
         <div id="importForm">
-            <br></br>
-            <h4>CSV Import</h4>
+            <h4>Import File:</h4>
             <form onSubmit={(e) => handleOnSubmit(e)}>
                 <input 
                     type={"file"} 
@@ -41,9 +40,13 @@ function CSVImport({setData, setTitle}) {
                     accept={".csv"}
                     onChange={handleOnChange}
                 />
-                <button type="submit">
-                    Import
-                </button>
+                <br></br>
+                <div id="submitBtnDiv">
+                    <button type="submit" id="fileInputBtn">
+                        Import
+                    </button>
+                    <p>{error}</p>
+                </div>
             </form>
         </div>
     )
