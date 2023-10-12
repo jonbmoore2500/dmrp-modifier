@@ -2,11 +2,10 @@ import React from "react"
 
 function Header({dataTitle}) {
 
-
     return (
-        <div id="appHeader">
+        <div id="titleDiv">
             <h1>CSV Modifier</h1>
-            <h3>For DM at Rightpoint</h3>
+            <h3>For DM &#40;and others&#41; at Rightpoint</h3>
         </div>
     )
 }

@@ -6,7 +6,7 @@ function ResultTableCont({tableData}) {
     // anything else need to go here? maybe just for styling
 
     return (
-        <div>
+        <div id="tablesContDiv">
             <br></br>
             <div>
                 {tableData.map((proj) => (
