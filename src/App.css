@@ -39,9 +39,11 @@
 }
 .mainTable th {
   border: 1px solid black;
+  user-select: none;
 }
 .mainTable td {
   border: 1px solid black;
+  user-select: none;
 }
 
 
@@ -80,18 +82,16 @@ tbody tr {
   z-index: 1;
   background-color: #A9D08E;
 }
+.userName{
+  font-weight: bold;
+  text-align: left;
+  background-color: #C6E0B4;
+}
+.userRate{
+  font-weight: bold;
+  background-color: #C6E0B4;
+}
 
-
-/* .firstColumn {
-  position: sticky; 
-  left: 0; 
-  z-index: 1;
-  opacity: 100; 
-  background-color: #A9D08E;
-  border-right: 2px solid #000;
-  border-left: 2px solid black;
-  font-weight: bold
-} */
 
 .username{
   text-align: left;
@@ -115,4 +115,11 @@ tbody tr:last-child {
 }
 .zeroCell{
   color:rgba(0, 0, 0, 0.546)
+}
+
+::selection{
+  background: none
+}
+.selected{
+  background: rgba(52, 52, 255, 0.31);
 }

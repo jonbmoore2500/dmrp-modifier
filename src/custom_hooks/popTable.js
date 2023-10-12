@@ -1,6 +1,6 @@
 function popTable(project) {
 
-    console.log(project)
+    // console.log(project)
 
     let tableHead = []
     let tableRows = []
