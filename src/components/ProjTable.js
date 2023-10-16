@@ -56,7 +56,7 @@ function ProjTable({project}) {
 
     function handleMouseDown(cell) {
         isSelecting = true
-        startCell = cell
+        startCell = cell.split("x")
         setCopied(false)
     }
 
@@ -65,19 +65,10 @@ function ProjTable({project}) {
 
         const table = document.getElementById(`${project.proj}table`)
         const allCells = Array.from(table.getElementsByClassName('data'))
-        const corners = [startCell.split("x"), cell.split("x")].sort((a, b) => {
-            if (parseInt(a[0]) > parseInt(b[0])) {
-                return 1
-            } else if (parseInt(a[0]) < parseInt(b[0])) {
-                return -1
-            } else {
-                if (parseInt(a[1]) > parseInt(b[1])) {
-                    return 1
-                } else {
-                    return -1
-                }
-            }
-        })
+        const corners = [ 
+            [Math.min(parseInt(startCell[0]), parseInt(cell.split("x")[0])), Math.min(parseInt(startCell[1]), parseInt(cell.split("x")[1]))],
+            [Math.max(parseInt(startCell[0]), parseInt(cell.split("x")[0])), Math.max(parseInt(startCell[1]), parseInt(cell.split("x")[1]))]
+        ]
         allCells.forEach((cell) => {
             let split = cell.id.split("x")
             if (split[0] >= parseInt(corners[0][0]) && split[0] <= parseInt(corners[1][0]) && split[1] >= parseInt(corners[0][1]) && split[1] <= parseInt(corners[1][1])) {
@@ -91,19 +82,10 @@ function ProjTable({project}) {
     function handleClipboard() {
         if (startCell) {
             const table = document.getElementById(`${project.proj}table`)
-            const corners = [startCell.split("x"), endCell.split("x")].sort((a, b) => {
-                if (parseInt(a[0]) > parseInt(b[0])) {
-                    return 1
-                } else if (parseInt(a[0]) < parseInt(b[0])) {
-                    return -1
-                } else {
-                    if (parseInt(a[1]) > parseInt(b[1])) {
-                        return 1
-                    } else {
-                        return -1
-                    }
-                }
-            })
+            const corners = [ 
+                [Math.min(parseInt(startCell[0]), parseInt(endCell[0])), Math.min(parseInt(startCell[1]), parseInt(endCell[1]))],
+                [Math.max(parseInt(startCell[0]), parseInt(endCell[0])), Math.max(parseInt(startCell[1]), parseInt(endCell[1]))]
+            ]
             const rowLength = corners[1][1] - corners[0][1] + 1
             const selecteds = Array.from(table.getElementsByClassName('selected')).map(x => x.innerHTML)
             const selectedRows = []
@@ -112,6 +94,7 @@ function ProjTable({project}) {
                 selectedRows.push(row)
             }
             navigator.clipboard.writeText(selectedRows.join("\n")).then(function(x) {
+                console.log(selectedRows.join("\n"))
                 handleCancel()
                 setCopied(true)
             })
@@ -131,7 +114,7 @@ function ProjTable({project}) {
 
     function handleMouseUp(cell) {
         isSelecting = false
-        endCell = cell
+        endCell = cell.split("x")
     }
     // end handle copy content
 
@@ -192,7 +175,7 @@ function ProjTable({project}) {
                     </tbody>
                 </table>
             </div>
-            <BottomBtns handleClipboard={handleClipboard} handleCancel={handleCancel} copied={copied}/>
+            <BottomBtns handleClipboard={handleClipboard} handleCancel={handleCancel} copied={copied} proj={project.proj}/>
         </div>
     )
 }

@@ -56,13 +56,16 @@
   text-align: center;
 }
 
+.topNavLink{
+  padding: 10px 20px
+}
 .projMasterDiv{
   /* margin-bottom:20px; */
   margin: 15px 10%;
   border-bottom: 3px solid rgba(0, 128, 0, 0.462);
 }
 #tableOuter {
-  width: 100%;
+  width: 90%;
   margin-left: 5%;
   overflow-x: auto;
 }
@@ -216,4 +219,34 @@ tbody tr:last-child {
   margin: 0;
   vertical-align: center;
   color: firebrick
+}
+
+#projGraphLinkHead{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 5px 20px;
+}
+
+.projGraphLink{
+  display: block;
+  text-decoration: none;
+  padding: 5px;
+  font-size: 14px;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.projGraphLink:hover {
+  background-color: #A9D08E;
+  font-weight: bold
+}
+
+g text tspan{
+  left: 80px;
+  -webkit-transform: rotate(90deg);
 }

@@ -1,12 +1,12 @@
-import React, {useState} from "react"
+import React, {useState, useContext} from "react"
 import processFile from "../custom_hooks/processFile"
+import { DataContext } from "../contexts/DataContext"
 
-function CSVImport({setData, setTitle}) {
-
-    // turn into modal? just display file title in header?
+function CSVImport() {
 
     const [file, setFile] = useState(null)
     const [error, setError] = useState("")
+    const {setData} = useContext(DataContext)
 
     const fileReader = new FileReader()
 
@@ -25,7 +25,6 @@ function CSVImport({setData, setTitle}) {
             fileReader.readAsText(file)
         } else {
             setData([])
-            setTitle("")
             setError("Please select a valid file")
         }
     }
