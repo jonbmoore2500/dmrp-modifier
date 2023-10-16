@@ -3,10 +3,8 @@ import ProjTable from "./ProjTable"
 
 function ResultTableCont({tableData}) {
 
-    // anything else need to go here? maybe just for styling
-
     return (
-        <div id="tablesContDiv">
+        <div>
             <br></br>
             <div>
                 {tableData.map((proj) => (
