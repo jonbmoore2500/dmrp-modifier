@@ -19,8 +19,12 @@ function CSVImport() {
         e.preventDefault()
         if (file) {
             fileReader.onload = function (e) {
-                const csvOutput = e.target.result 
-                setData(processFile(csvOutput))
+                // const csvOutput = e.target.result 
+                const data = processFile(e.target.result)
+                const expiry = new Date().getTime() + (2*24*60*60*1000)
+                const dataToStore = {data, expiry}
+                localStorage.setItem("dmrpCsvData", JSON.stringify(dataToStore))
+                setData(data)
             }
             fileReader.readAsText(file)
         } else {

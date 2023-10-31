@@ -1,5 +1,5 @@
 import React, {useContext} from "react"
-import {BrowserRouter, Routes, Route} from "react-router-dom"
+import {BrowserRouter, Routes, Route, redirect} from "react-router-dom"
 import {Outlet, NavLink} from "react-router-dom"
 import './App.css';
 import { DataContext } from "./contexts/DataContext";
@@ -12,7 +12,6 @@ import GraphContainer from "./components/GraphContainer";
 function App() {
   
   const {data} = useContext(DataContext)
-
 
   return (
     <div className="App">
