@@ -14,6 +14,38 @@ function processFile(data) {
     }
 
     function createProjObjs(rowsArr) {
+        // potential strategy for streamline, doesn't quite work - needs troubleshooting 
+        // return rowsArr.reduce((projObjs, row) => {
+        //     const [proj, userName, sheetTitle, hours, rate] = row
+        //     let projIndex = projObjs.findIndex((projObj) => projObj.proj.includes(proj))
+        //     if (projIndex === -1) {
+        //         projObjs.push({ proj, users: [], timeSheets: [] })
+        //         projIndex = projObjs.length - 1
+        //     }
+        //     let userIndex = projObjs[projIndex].users.findIndex((user) => user.userName.includes(userName));
+        //     if (userIndex === -1) {
+        //         projObjs[projIndex].users.push({ userName, timeSheets: [], rate });
+        //         userIndex = projObjs[projIndex].users.length - 1;
+        //     }
+        //     const timeSheetIndex = projObjs[projIndex].users[userIndex].timeSheets.findIndex(
+        //         (timeSheet) => timeSheet.sheetTitle.includes(sheetTitle)
+        //     );
+        //     if (timeSheetIndex >= 0) {
+        //         projObjs[projIndex].users[userIndex].timeSheets[timeSheetIndex].hours += hours;
+        //         if (!sheetTitle.includes('Adjusted')) {
+        //         projObjs[projIndex].timeSheets.push(sheetTitle);
+        //         }
+        //     } else {
+        //         projObjs[projIndex].users[userIndex].timeSheets.push({ sheetTitle, hours });
+        //         if (!sheetTitle.includes('Adjusted')) {
+        //         projObjs[projIndex].timeSheets.push(sheetTitle);
+        //         }
+        //     }  
+        //     projObjs[projIndex].users[userIndex].rate = Math.max(rate, projObjs[projIndex].users[userIndex].rate);
+        //     return projObjs;
+        // }, []);                      
+
+        // strikes me as inefficient, but does currently work!
         let projObjs = []
 
         function handleSort(arr, sortBy) {

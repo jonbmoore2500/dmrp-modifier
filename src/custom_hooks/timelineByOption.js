@@ -6,7 +6,7 @@ const months3Ltr = {
 }
 
 function timelineByOption(data, option) {
-    console.log(data)
+    // console.log(data)
 
     function getMonth(date) {
         let month = date.slice(0, 2)

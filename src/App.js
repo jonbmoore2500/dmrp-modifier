@@ -13,7 +13,6 @@ function App() {
   
   const {data} = useContext(DataContext)
 
-
   return (
     <div className="App">
       <div id="appHeader">
