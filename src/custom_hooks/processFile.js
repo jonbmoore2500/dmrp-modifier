@@ -5,7 +5,9 @@ function processFile(data) {
         return splitRows.reduce(function (array, element) {
             if (element.slice(0, 5).includes("-")) {
                 let fullSplit = element.replace(/"/g, "").split(",")
-                array.push([fullSplit[0], (fullSplit[1] + "," + fullSplit[2]), fullSplit[3], parseFloat(fullSplit[5]), parseFloat(fullSplit[7])])
+                if (!fullSplit[3].includes("Declined")) {
+                    array.push([fullSplit[0], (fullSplit[1] + "," + fullSplit[2]), fullSplit[3], parseFloat(fullSplit[5]), parseFloat(fullSplit[7])])
+                }
             }
             return array
         }, [])
