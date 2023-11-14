@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react"
+import React, {useState, useEffect, useRef } from "react"
 import popTable from "../custom_hooks/popTable"
 import TableButtons from "./TableButtons"
 import BottomBtns from "./BottomBtns"
@@ -9,6 +9,7 @@ function ProjTable({project}) {
     const [weeksNum, setWeeksNum] = useState(4)
     const [showIdle, setShowIdle] = useState(false)
     const [showRates, setShowRates] = useState(false)
+    const tableRef = useRef(null)
 
     const fullTableObj = popTable(project) // populates master table object. manipulated below
 
@@ -54,10 +55,25 @@ function ProjTable({project}) {
         }
     }, [copied])
 
+    useEffect(() => {
+        function handleClickOut(e) {
+            if (tableRef.current && !tableRef.current.contains(e.target)) handleCancel()
+        }
+        document.addEventListener('click', handleClickOut)
+        return () => document.removeEventListener('click', handleClickOut)
+    }, [tableRef])
+
     function handleMouseDown(cell) {
         isSelecting = true
         startCell = cell.split("x")
         setCopied(false)
+    }
+    
+    function handleClick(cell) {
+        startCell = cell.split("x")
+        isSelecting = true 
+        handleMouseOver(cell)
+        isSelecting = false
     }
 
     function handleMouseOver(cell) {
@@ -93,8 +109,8 @@ function ProjTable({project}) {
                 const row = selecteds.slice(i, i + rowLength).join("\t")
                 selectedRows.push(row)
             }
-            navigator.clipboard.writeText(selectedRows.join("\n")).then(function(x) {
-                console.log(selectedRows.join("\n"))
+            navigator.clipboard.writeText(selectedRows.join("\n")).then(function() {
+                // console.log(selectedRows.join("\n"))
                 handleCancel()
                 setCopied(true)
             })
@@ -118,7 +134,6 @@ function ProjTable({project}) {
     }
     // end handle copy content
 
-
     return (
         <div className="projMasterDiv">
             <div className="tableHead">
@@ -130,7 +145,7 @@ function ProjTable({project}) {
                 />
             </div>
             <div id="tableOuter">
-                <table className="mainTable" id={`${project.proj}table`}>
+                <table className="mainTable" id={`${project.proj}table`} ref={tableRef}>
                     <thead>
                         <tr>
                             <th className="stickySpan" colSpan={showRates ? "2" : "1"}>{tableHead[0]}</th>
@@ -159,6 +174,7 @@ function ProjTable({project}) {
                                         onMouseDown={(e) => handleMouseDown(e.target.id)}
                                         onMouseUp={(e) => handleMouseUp(e.target.id)}
                                         onMouseOver={(e) => handleMouseOver(e.target.id)}
+                                        onClick={(e) => handleClick(e.target.id)}
                                     >
                                         {(showRates && i%2 === 1) ? "$" + x : x }
                                     </td>
