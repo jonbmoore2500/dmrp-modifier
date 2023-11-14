@@ -1,6 +1,8 @@
-// temporary, for experimenting
+// temporary, for experimenting - might be more permanent, tbd
 
 import React, {useContext, useEffect, useState} from "react"
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { ComposedChart, XAxis, YAxis, CartesianGrid, Line, Tooltip, Area } from "recharts"
 import { useParams } from "react-router-dom"
 import { DataContext } from "../contexts/DataContext"
@@ -15,12 +17,16 @@ function ChartContainer() {
 
     const {data} = useContext(DataContext)
 
-    const [timeline, setTimeline] = useState("all")
-    const [byOption, setByOption] = useState("all")
-    const [normalized, setNormalized] = useState(false)
+    const [weekMonth, setWeekMonth] = useState("month")
     const [budgetVal, setBudgetVal] = useState(null)
     const [projStartDate, setProjStartDate] = useState(null)
     const [projectMonths, setProjectMonths] = useState(12)
+    const [budgetVsUsers, setBudgetVsUsers] = useState(false)
+
+    function handleViewChange(e) {
+        setBudgetVsUsers(JSON.parse(e.target.value))
+        setBudgetVal(null)
+    }
 
     function handlePlotBudget(event) {
         event.preventDefault();
@@ -31,26 +37,102 @@ function ChartContainer() {
         }
     }
 
+    function handleChangeStart(date) {
+        setProjStartDate(date.toString().slice(4, 15))
+    }
+
+    function handleLengthChange(e) {
+        e.preventDefault()
+        if (/^\d+$/.test(e.target.value)) {
+            setProjectMonths(e.targetValue)
+          }
+    }
+
     let projId = useParams()
+
     const selectedProj = data.find((proj) => proj.proj === projId.proj)
     const graphData = processGraph(selectedProj)
-    const [teamData, usersData] = processChart(selectedProj)
+    let [teamData, usersData] = processChart(selectedProj, weekMonth)
+    let budgetData = []
+
+    if (budgetVal) {
+        budgetData = addBudgetLine(teamData, budgetVal, projectMonths, projStartDate, weekMonth)
+        // teamData = extendData(teamData, projStartDate, projectMonths, weekMonth)
+    }
 
     useEffect(() => {
-        setNormalized(false)
-    }, [projId, timeline])
-
-    useEffect(() => {
-        setTimeline("all")
         setBudgetVal(null)
     }, [projId])
+
     // console.log("graphData", graphData)
-    // console.log("chartData", teamData)
+    console.log("teamData", teamData)
+    console.log("usersData", usersData)
     return (
         <div>
             Project: {selectedProj.proj}
             <br></br>
-            <D3Chart teamData={teamData} usersData={usersData}/>
+            <div>
+                <label>
+                    Choose a Time Breakdown
+                    <select onChange={(e) => setWeekMonth(e.target.value)}>
+                        <option value="month">Month</option>
+                        <option value="week">Week</option>
+                    </select>
+                </label>
+                <label>
+                    Select a Data View
+                    <select onChange={handleViewChange}>
+                        <option value={false}>User Breakdown</option>
+                        <option value={true}>Budget Compare</option>
+                    </select>
+                </label>
+                { budgetVsUsers ? 
+                    <>
+                        <form onSubmit={handlePlotBudget}>
+                            <label>
+                                <input 
+                                    type="text"
+                                    name="number"
+                                    placeholder="$_____"
+                                />
+                            </label>
+                            <button type="submit">Apply Budget</button>
+                        </form>
+
+                        <label>
+                            Change Default Project Start Date &#40;optional&#41;
+                            <DatePicker
+                                selected={projStartDate}
+                                onChange={handleChangeStart}
+                                dateFormat="MM/dd/yyyy"
+                                isClearable
+                                showYearDropdown
+                                scrollableYearDropdown
+                            />
+                        </label>
+
+                        <form onSubmit={handleLengthChange}>
+                            <label>
+                                Project Length &#40;months&#41;
+                                <input 
+                                    value={projectMonths}
+                                    type="text"
+                                    name="months"
+                                />
+                            </label>
+                            <button type="submit">Change Length</button>
+                        </form>
+                    </>
+                    :
+                    null
+                }
+            </div>
+            <D3Chart 
+                teamData={teamData} 
+                usersData={usersData} 
+                budgetData={budgetData} 
+                budgetVsUsers={budgetVsUsers}
+            />
             <ComposedChart width={1200} height={450} data={graphData} margin={{top:0, right: 30, bottom: 80, left:100}}>
                 <XAxis dataKey="wk"
                     angle="-75"
@@ -78,6 +160,3 @@ function ChartContainer() {
 }
 
 export default ChartContainer
-
-// try d3 ? https://observablehq.com/@d3/difference-chart/2?intent=fork 
-// https://www.influxdata.com/blog/guide-d3js-react/#:~:text=To%20create%20a%20bar%20chart,the%20chart%20to%20the%20page.&text=We%20use%20the%20useRef%20hook,use%20to%20render%20the%20chart.

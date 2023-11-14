@@ -8,6 +8,7 @@ import CSVImport from './components/CSVImport';
 import ResultTableCont from './components/ResultTableCont';
 import GraphsLayout from "./components/GraphsLayout";
 import GraphContainer from "./components/GraphContainer";
+import ChartContainer from "./components/ChartContainer";
 
 function App() {
   
@@ -30,7 +31,7 @@ function App() {
           <Routes>
             <Route exact path="/" element={<ResultTableCont tableData={data}/> } />
             <Route path="/graphs" element={<GraphsLayout />}>
-              <Route path="/graphs:proj" element={<GraphContainer />} />
+              <Route path="/graphs:proj" element={<ChartContainer />} />
             </Route>
             {/* <Route path="/budget" element={<BudgetLayout />} >
               <Route path="/budget:proj" element={<BudgetContainer />} />

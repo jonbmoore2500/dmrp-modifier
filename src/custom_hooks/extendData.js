@@ -1,15 +1,12 @@
-function addBudgetLine(data, budgetVal, months, newStartDate, byOption) {
+function extendData(data, startDate, months, weekMonth) {
+    let extended = [...data]
+    
 
-
+    return extended
 }
 
-// export default addBudgetLine
+export default extendData
 
-
-
-
-
-// HOLD ONTO THIS FOR A BIT
 // function addBudgetLine(data, budgetVal, months) {
 
 //     function handleRemainingDate(finalData, monthsSince) {
@@ -40,5 +37,3 @@ function addBudgetLine(data, budgetVal, months, newStartDate, byOption) {
 
 //     return newData
 // }
-
-// export default addBudgetLine

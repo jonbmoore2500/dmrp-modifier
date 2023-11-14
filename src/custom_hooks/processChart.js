@@ -1,4 +1,6 @@
-function processChart(project) {
+import byOption from "./byOption"
+
+function processChart(project, weekMonth) {
 
     let teamData = []
     let usersData = []
@@ -15,18 +17,20 @@ function processChart(project) {
             let budgToDate = userTotals[u.userName] // given user's total to date
             if (sheet) { // if sheet, handles new data object to array
                 const budgTotal = (sheet.hours * u.rate) + budgToDate
-                const data = {date: sheet.sheetTitle, user: u.userName, budget: budgTotal}
+                const data = {date: project.timeSheets[i], user: u.userName, budget: budgTotal}
                 usersData.push(data)
                 userTotals[u.userName] = budgTotal
                 runningTotal += budgTotal
-            } else { // if no sheet, still adds user's budget to running total
+            } else { // if no sheet, still adds user's budget to running total and obj to usersData with no budget change
                 runningTotal += budgToDate
+                const data = {date: project.timeSheets[i], user: u.userName, budget: budgToDate}
+                usersData.push(data)
             }
         })
         teamData.push({date: project.timeSheets[i], budget: runningTotal})
     }
 
-    // console.log("in processChart", teamData, usersData)
+    [teamData, usersData] = byOption(teamData, usersData, weekMonth)
 
     return [teamData, usersData] 
 }
