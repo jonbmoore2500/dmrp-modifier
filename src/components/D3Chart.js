@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
 
-function D3Chart({teamData, usersData, budgetData, budgetVsUsers}) {
+function D3Chart({teamData, usersData, budgetVsUsers, includeBudget}) {
     const stackedChartRef = useRef()
     // const legendRef = useRef() // consider moving legend to its own div, outside chart svg
 
@@ -19,9 +19,12 @@ function D3Chart({teamData, usersData, budgetData, budgetVsUsers}) {
         const x = d3.scaleBand()
             .domain(usersData.map(d => d.date))
             .range([marginLeft, width - marginRight])
-            // Adjust the padding as needed
 
-        const maxBudget = d3.max(teamData, d => d.budget);
+        let maxBudget = d3.max(teamData, d => d.budget);
+        const teamsMax = teamData[teamData.length - 1]
+        if (includeBudget && teamsMax.budget < teamsMax.expected) {
+            maxBudget = d3.max(teamData, d => d.expected)
+        } 
 
         // Round the maximum budget value to the nearest hundred or any desired round number
         const roundedMaxBudget = Math.ceil(maxBudget / 1000) * 1000;
@@ -38,27 +41,92 @@ function D3Chart({teamData, usersData, budgetData, budgetVsUsers}) {
 
         svg.selectAll("*").remove();
 
-        svg.append("g")
-            .attr("transform", `translate(${marginLeft},0)`)
-            .call(d3.axisLeft(y).ticks(height / 80))
-            .call(g => g.select(".domain").remove())
-            .call(g => g.selectAll(".tick line").clone()
-                .attr("x2", width - marginLeft - marginRight)
-                .attr("stroke-opacity", 0.1))
-            .call(g => g.append("text")
-                .attr("x", -marginLeft)
-                .attr("y", 10)
-                .attr("fill", "currentColor")
-                .attr("text-anchor", "start")
-                .text("Budget to date, by user"));
+        const line = d3.line()
+            .x(d => x(d.date) + x.bandwidth() / 2)
+            .y(d => y(d.budget));
 
-        // tooltip and mouseover functions for area
-
+        svg.append("path")
+            .attr("fill", "none")
+            .attr("stroke", "black")
+            .attr("stroke-width", 1)
+            .attr("d", line(teamData));
         
-        if (budgetVsUsers) { // all budget-line-specific rendering
+        if (budgetVsUsers && includeBudget) { // all budget-line-specific rendering
+            svg.append("g")
+                .attr("transform", `translate(${marginLeft},0)`)
+                .call(d3.axisLeft(y).ticks(height / 80))
+                .call(g => g.select(".domain").remove())
+                .call(g => g.selectAll(".tick line").clone()
+                    .attr("x2", width - marginLeft - marginRight)
+                    .attr("stroke-opacity", 0.1))
+                .call(g => g.append("text")
+                    .attr("x", -marginLeft)
+                    .attr("y", 10)
+                    .attr("fill", "currentColor")
+                    .attr("text-anchor", "start")
+                    .text("Expected vs Actual"));
+
+            const lineExpect = d3.line()
+                .x(d => x(d.date) + x.bandwidth() / 2)
+                .y(d => y(d.expected));
+
+            svg.append("path")
+                .attr("fill", "none")
+                .attr("stroke", "black")
+                .attr("stroke-width", 3)
+                .attr("d", lineExpect(teamData));
+
+
+            const colors = ["#de1a24", "#3f8f29"] // [red, green]
+
+            svg.append("clipPath")
+                .attr("id", "above")
+                .append("path")
+                .attr("d", d3.area()
+                    .x(d => x(d.date) + x.bandwidth() / 2)
+                    .y0(0)
+                    .y1(d => y(d.budget))(teamData));
+
+            svg.append("path")
+                .attr("clip-path", "url(#above)")
+                .attr("fill", colors[1])
+                .attr("d", d3.area()
+                    .x(d => x(d.date) + x.bandwidth() / 2)
+                    .y0(height)
+                    .y1(d => y(d.expected))(teamData))
+
+            svg.append("clipPath")
+                .attr("id", "below")
+                .append("path")
+                .attr("d", d3.area()
+                    .x(d => x(d.date) + x.bandwidth() / 2)
+                    .y0(0)
+                    .y1(d => y(d.expected))(teamData))
+
+            svg.append("path")
+                .attr("clip-path", "url(#below)")
+                .attr("fill", colors[0])
+                .attr("d", d3.area()
+                    .x(d => x(d.date) + x.bandwidth() / 2)
+                    .y0(height)
+                    .y1(d => y(d.budget))(teamData))
 
         } else { // all area-specific rendering
-            // console.log("hello")
+
+            svg.append("g")
+                .attr("transform", `translate(${marginLeft},0)`)
+                .call(d3.axisLeft(y).ticks(height / 80))
+                .call(g => g.select(".domain").remove())
+                .call(g => g.selectAll(".tick line").clone()
+                    .attr("x2", width - marginLeft - marginRight)
+                    .attr("stroke-opacity", 0.1))
+                .call(g => g.append("text")
+                    .attr("x", -marginLeft)
+                    .attr("y", 10)
+                    .attr("fill", "currentColor")
+                    .attr("text-anchor", "start")
+                    .text("Budget to date, by user"));
+
             const tooltip = d3.select("body")
                 .append("div")
                     .attr("id", "chart")
@@ -99,23 +167,7 @@ function D3Chart({teamData, usersData, budgetData, budgetVsUsers}) {
                     .text(d => d.key)
 
             const legend = generateLegend(svg, color, series);
-
         }
-
-
-
-
-
-
-        const line = d3.line()
-            .x(d => x(d.date) + x.bandwidth() / 2)
-            .y(d => y(d.budget));
-
-        svg.append("path")
-            .attr("fill", "none")
-            .attr("stroke", "black")
-            .attr("stroke-width", 2)
-            .attr("d", line(teamData));
 
         svg.append("g")
             .attr("transform", `translate(0,${height - marginBottom})`)
@@ -123,8 +175,6 @@ function D3Chart({teamData, usersData, budgetData, budgetVsUsers}) {
             .selectAll("text")
             .attr("transform", "rotate(-60)")
             .style("text-anchor", "end");
-
-
 
     }, [teamData, usersData]);
 
