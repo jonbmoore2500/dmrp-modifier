@@ -1,9 +1,14 @@
-function addBudgetLine(data, budgetVal, months, newStartDate, byOption) {
-
-
+function addBudgetLine(data, budgetVal, months, newStartDate, weekMonth) {
+    if (weekMonth === "week") {
+        months = (52/12) * months
+    }
+    
+    return data.map((date, i) => {
+        return {...date, expected: Math.floor((budgetVal/months)*i)}
+    })
 }
 
-// export default addBudgetLine
+export default addBudgetLine
 
 
 
