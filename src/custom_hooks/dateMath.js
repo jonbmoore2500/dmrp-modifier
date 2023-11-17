@@ -1,7 +1,6 @@
 function dateMath(date) {
-    let day = parseInt(date.slice(3, 5), 10)
-    let month = parseInt(date.slice(0, 2), 10)
-    let year = parseInt(date.slice(6), 10)
+
+    let [month, day, year] = date.split("/").map(element => parseInt(element))
 
     function handleAdd2(monthDays) {
         const newDay = day + 2
