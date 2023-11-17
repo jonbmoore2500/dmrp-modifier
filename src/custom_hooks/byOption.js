@@ -30,17 +30,17 @@ function byOption(teams, users, option) {
                 month = 12
                 year -= 1
             }
+            let daysTotal = 28
             if (month === 2) { // feb
-                let daysTotal = 28
-                if (year % 4 === 0) {
+                if (year % 4 === 0) { // leap year
                     daysTotal += 1
                 }
-                day = daysTotal + newDay
             } else if ([1, 3, 5, 7, 8, 10, 12].includes(month)) { // 31 day months
-                day = 31 + newDay
+                daysTotal = 31
             } else { // 30 day months
-                day = 30 + newDay
+                daysTotal = 30
             }
+            day = daysTotal + newDay
         } else {
             day -= 7
         }
@@ -67,14 +67,14 @@ function byOption(teams, users, option) {
             return result
         }, [])
     }
-    
+
     function monthHelper(data, hasUser) {
         return data.reduce((result, current) => {
             let month = getMonth(current.date)
             let key = hasUser ? month + current.user : month
             if (!result[key]) {
                 result[key] = hasUser
-                ? { date: month, user: current.user, budget: current.budget }
+                ? { date: month, user: current.user, role: current.role, budget: current.budget }
                 : { date: month, budget: current.budget }
             } else {
                 result[key].budget = current.budget

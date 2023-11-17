@@ -1,10 +1,11 @@
-function addBudgetLine(data, budgetVal, months, newStartDate, weekMonth) {
+function addBudgetLine(data, budgetSettings, weekMonth) {
+    // {budgetVal: null, startDate: null, duration: 12} - for reference
     if (weekMonth === "week") {
-        months = (52/12) * months
+        budgetSettings.duration = (52/12) * budgetSettings.duration
     }
-    
+
     return data.map((date, i) => {
-        return {...date, expected: Math.floor((budgetVal/months)*i)}
+        return {...date, expected: Math.floor((budgetSettings.budgetVal/budgetSettings.duration)*i)}
     })
 }
 

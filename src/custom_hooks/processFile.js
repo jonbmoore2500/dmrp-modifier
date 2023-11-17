@@ -6,7 +6,7 @@ function processFile(data) {
             if (element.slice(0, 5).includes("-")) {
                 let fullSplit = element.replace(/"/g, "").split(",")
                 if (!fullSplit[3].includes("Declined")) {
-                    array.push([fullSplit[0], (fullSplit[1] + "," + fullSplit[2]), fullSplit[3], parseFloat(fullSplit[5]), parseFloat(fullSplit[7])])
+                    array.push([fullSplit[0], (fullSplit[1] + "," + fullSplit[2]), fullSplit[3], parseFloat(fullSplit[5]), parseFloat(fullSplit[7]), fullSplit[9]])
                 }
             }
             return array
@@ -76,7 +76,7 @@ function processFile(data) {
             if (userI >= 0) { // user exists in proj, move to timeSheet
                 handleSheet(row, projI, userI)
             } else {
-                projObjs[projI]["users"] = handleSort([...projObjs[projI]["users"], {"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}], "rate": row[4]}], "userName")
+                projObjs[projI]["users"] = handleSort([...projObjs[projI]["users"], {"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}], "rate": row[4], "role": row[5]}], "userName")
             }
         }
         function handleProj(row) {
@@ -89,7 +89,7 @@ function processFile(data) {
                     projObjs[projI]["timeSheets"] = [row[2], ...projObjs[projI]["timeSheets"]]
                 }
             } else {
-                projObjs = handleSort([...projObjs, ({"proj": row[0], "users": [{"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}], "rate": row[4]}], "timeSheets": [row[2]]})], "proj")
+                projObjs = handleSort([...projObjs, ({"proj": row[0], "users": [{"userName": row[1], "timeSheets": [{"sheetTitle": row[2], "hours": row[3]}], "rate": row[4], "role": row[5]}], "timeSheets": [row[2]]})], "proj")
             }
         }
 

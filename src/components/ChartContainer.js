@@ -18,14 +18,24 @@ function ChartContainer() {
     const {data} = useContext(DataContext)
 
     const [weekMonth, setWeekMonth] = useState("month")
-    const [budgetVal, setBudgetVal] = useState(null)
-    const [projStartDate, setProjStartDate] = useState(null)
-    const [projectMonths, setProjectMonths] = useState(12)
     const [budgetVsUsers, setBudgetVsUsers] = useState(false)
+
+    const [userRole, setUserRole] = useState("userName")
+
+    const [budgetSettings, setBudgetSettings] = useState({budgetVal: null, startDate: null, duration: 12})
+
+
+    function resetBudget() {
+        setBudgetSettings({budgetVal: null, startDate: null, duration: 12})
+    }
 
     function handleViewChange(e) {
         setBudgetVsUsers(JSON.parse(e.target.value))
-        setBudgetVal(null)
+        resetBudget()
+    }
+
+    function handleAreaChange(e) {
+        setUserRole(e.target.value)
     }
 
     function handlePlotBudget(event) {
@@ -33,40 +43,37 @@ function ChartContainer() {
         const inputValue = event.target.number.value;
         if (/^\d+$/.test(inputValue)) {
             const parsedNumber = parseInt(inputValue, 10);
-            setBudgetVal(parsedNumber)
+            setBudgetSettings({...budgetSettings, budgetVal: parsedNumber})
         } else {
-            setBudgetVal(null)
+            setBudgetSettings({...budgetSettings, budgetVal: null})
         }
     }
 
     function handleChangeStart(date) {
-        setProjStartDate(date.toString().slice(4, 15))
+        setBudgetSettings({...budgetSettings, startDate: date.toString().slice(4, 15)})
     }
 
     function handleLengthChange(e) {
         e.preventDefault()
         if (/^\d+$/.test(e.target.value)) {
-            setProjectMonths(e.targetValue)
+            setBudgetSettings({...budgetSettings, duration: e.target.value})
         }
     }
 
     let projId = useParams()
 
     const selectedProj = data.find((proj) => proj.proj === projId.proj)
-    const graphData = processGraph(selectedProj)
-    let [teamData, usersData] = processChart(selectedProj, weekMonth)
 
-    if (budgetVal) {
-        teamData = addBudgetLine(teamData, budgetVal, projectMonths, projStartDate, weekMonth)
-        // teamData = extendData(teamData, projStartDate, projectMonths, weekMonth)
+    let [teamData, usersData] = processChart(selectedProj, weekMonth, userRole)
+
+    if (budgetSettings.budgetVal) {
+        teamData = addBudgetLine(teamData, budgetSettings, weekMonth)
     }
 
     useEffect(() => {
-        setBudgetVal(null)
+        resetBudget()
     }, [projId])
 
-    console.log("teamData", teamData)
-    console.log("usersData", usersData)
     return (
         <div>
             Project: {selectedProj.proj}
@@ -102,7 +109,7 @@ function ChartContainer() {
                         <label>
                             Change Default Project Start Date &#40;optional&#41;
                             <DatePicker
-                                selected={projStartDate}
+                                selected={budgetSettings.startDate}
                                 onChange={handleChangeStart}
                                 dateFormat="MM/dd/yyyy"
                                 isClearable
@@ -115,24 +122,31 @@ function ChartContainer() {
                             <label>
                                 Project Length &#40;months&#41;
                                 <input 
-                                    value={projectMonths}
+                                    value={budgetSettings.duration}
                                     type="text"
                                     name="months"
-                                    onChange={(e) => setProjectMonths(e.target.value)}
+                                    onChange={(e) => setBudgetSettings({...budgetSettings, duration: e.target.value})}
                                 />
                             </label>
                             <button type="submit">Change Length</button>
                         </form>
                     </>
                     :
-                    null
+                    <label>
+                    Choose an Area Breakdown
+                        <select onChange={handleAreaChange}>
+                            <option value="userName">By User</option>
+                            <option value="role">By Role</option>
+                        </select>
+                    </label>
                 }
             </div>
             <D3Chart 
                 teamData={teamData} 
                 usersData={usersData} 
                 budgetVsUsers={budgetVsUsers}
-                includeBudget={budgetVal ? true : false}
+                includeBudget={budgetSettings.budgetVal ? true : false}
+                userRole={userRole}
             />
         </div>
     )

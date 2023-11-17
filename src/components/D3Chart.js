@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
 
-function D3Chart({teamData, usersData, budgetVsUsers, includeBudget}) {
+function D3Chart({teamData, usersData, budgetVsUsers, includeBudget, userRole}) {
     const stackedChartRef = useRef()
     // const legendRef = useRef() // consider moving legend to its own div, outside chart svg
 
@@ -51,7 +51,7 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget}) {
             .attr("stroke-width", 1)
             .attr("d", line(teamData));
         
-        if (budgetVsUsers && includeBudget) { // all budget-line-specific rendering
+        if (budgetVsUsers && includeBudget) { // all expected-line-specific and diffArea rendering
             svg.append("g")
                 .attr("transform", `translate(${marginLeft},0)`)
                 .call(d3.axisLeft(y).ticks(height / 80))
@@ -75,7 +75,6 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget}) {
                 .attr("stroke", "black")
                 .attr("stroke-width", 3)
                 .attr("d", lineExpect(teamData));
-
 
             const colors = ["#de1a24", "#3f8f29"] // [red, green]
 
@@ -111,7 +110,7 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget}) {
                     .y0(height)
                     .y1(d => y(d.budget))(teamData))
 
-        } else { // all area-specific rendering
+        } else { // all users-area-specific rendering
 
             svg.append("g")
                 .attr("transform", `translate(${marginLeft},0)`)
@@ -125,7 +124,7 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget}) {
                     .attr("y", 10)
                     .attr("fill", "currentColor")
                     .attr("text-anchor", "start")
-                    .text("Budget to date, by user"));
+                    .text("Budget to date, by user or role"));
 
             const tooltip = d3.select("body")
                 .append("div")
