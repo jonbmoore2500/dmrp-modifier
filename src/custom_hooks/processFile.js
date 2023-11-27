@@ -28,7 +28,7 @@ function processFile(data) {
         return rowsArr.reduce((resultArr, row) => {
             const [projectName, userName, sheetTitle, hours, rate, role] = row
             // prevent sorting for every row, checks to see if updates that might require sorting are made
-            // only ever needed if proj or user don't exist yet
+            // only ever needed if proj or user don't exist yet. still checks again at the end, only needed if array.length > 1
             let sortProjs = false 
             let sortUsers = false
             
@@ -62,8 +62,12 @@ function processFile(data) {
                 }
             }  
             resultArr[projIndex].users[userIndex].rate = Math.max(rate, resultArr[projIndex].users[userIndex].rate)
-            if (sortUsers) {resultArr[projIndex].users = handleSort(resultArr[projIndex].users, "userName")}
-            if (sortProjs) {resultArr = handleSort(resultArr, "proj")}
+            if (sortUsers && resultArr[projIndex].users.length > 1) {
+                resultArr[projIndex].users = handleSort(resultArr[projIndex].users, "userName")
+            }
+            if (sortProjs && resultArr.length > 1) {
+                resultArr = handleSort(resultArr, "proj")
+            }
             return resultArr
         }, [])                  
     }

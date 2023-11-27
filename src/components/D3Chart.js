@@ -6,6 +6,7 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget, userRole}) 
     const stackedChartRef = useRef()
     // const legendRef = useRef() // consider moving legend to its own div, outside chart svg
 
+    // add tooltip https://observablehq.com/@d3/line-with-tooltip/2?intent=fork
     const width = 1200;
     const height = 700;
     const marginTop = 20;
@@ -27,29 +28,33 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget, userRole}) 
         } 
 
         // Round the maximum budget value to the nearest hundred or any desired round number
-        const roundedMaxBudget = Math.ceil(maxBudget / 1000) * 1000;
+        const roundedMaxBudget = Math.ceil(maxBudget / 1000) * 1000
 
         const y = d3.scaleLinear()
             .domain([0, roundedMaxBudget + 500])
-            .range([height - marginBottom, marginTop]);
+            .range([height - marginBottom, marginTop])
 
         const svg = d3.select(stackedChartRef.current)
             .attr("width", width)
             .attr("height", height)
             .attr("viewBox", [0, 0, width, height])
-            .attr("style", "max-width: 100%; height: auto;");
+            .attr("style", "max-width: 100%; height: auto;")
 
-        svg.selectAll("*").remove();
+        svg.selectAll("*").remove()
 
         const line = d3.line()
             .x(d => x(d.date) + x.bandwidth() / 2)
-            .y(d => y(d.budget));
+            .y(d => y(d.budget))
+
+        
+
+
 
         svg.append("path")
             .attr("fill", "none")
             .attr("stroke", "black")
-            .attr("stroke-width", 1)
-            .attr("d", line(teamData));
+            .attr("stroke-width", 2)
+            .attr("d", line(teamData))
         
         if (budgetVsUsers && includeBudget) { // all expected-line-specific and diffArea rendering
             svg.append("g")
@@ -126,28 +131,34 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget, userRole}) 
                     .attr("text-anchor", "start")
                     .text("Budget to date, by user or role"));
 
-            const tooltip = d3.select("body")
+            const areaTooltip = d3.select("body")
                 .append("div")
                     .attr("id", "chart")
-                    .attr("class", "tooltip");   
+                    .attr("class", "tooltip") 
 
             const mouseover = function(d) {
-                tooltip.style("opacity", .8)
+                areaTooltip.style("opacity", .8)
                 d3.select(this).style("opacity", .5)
             }
             const mouseleave = function(d) {
-                tooltip.style("opacity", 0)
+                areaTooltip.style("opacity", 0)
                 d3.select(this).style("opacity", 1)
             }
+
+
+                    
+
+
+
 
             const series = d3.stack()
                 .keys(d3.union(usersData.map(d => d.user)))
                 .value(([, D], key) => D.get(key).budget)
-                (d3.index(usersData, d => d.date, d => d.user));
+                (d3.index(usersData, d => d.date, d => d.user))
 
             const color = d3.scaleOrdinal()
                 .domain(series.map(d => d.key))
-                .range(d3.schemeTableau10);
+                .range(d3.schemeTableau10)
     
             const area = d3.area()
                 .x(d => x(d.data[0]) + x.bandwidth() / 2)
@@ -165,7 +176,8 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget, userRole}) 
                 .append("title")
                     .text(d => d.key)
 
-            const legend = generateLegend(svg, color, series);
+            generateLegend(svg, color, series)
+
         }
 
         svg.append("g")
@@ -173,7 +185,7 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget, userRole}) 
             .call(d3.axisBottom(x).tickSizeOuter(0))
             .selectAll("text")
             .attr("transform", "rotate(-60)")
-            .style("text-anchor", "end");
+            .style("text-anchor", "end")
 
     }, [teamData, usersData]);
 
@@ -189,7 +201,7 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget, userRole}) 
     function generateLegend(svg, color, series) {
         const legendItems = series.map(d => ({
             user: d.key,
-            color: color(d.key),
+            color: color(d.key)
         }))
 
         const longest = findLongestUser(legendItems)
@@ -209,17 +221,16 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget, userRole}) 
             .attr("y", 0)
             .style("fill", "#fff")
 
-        // Append color swatches
-        legend.selectAll("rect.legend-swatch") // Use a class for the color swatches
+        legend.selectAll("rect.legend-swatch")
             .data(legendItems)
             .enter()
             .append("rect")
-            .attr("class", "legend-swatch") // Add a class to the rectangles
+            .attr("class", "legend-swatch")
             .attr("width", legendRectSize)
             .attr("height", legendRectSize)
             .attr("x", 0)
             .attr("y", (d, i) => i * (legendRectSize + legendSpacing) + legendSpacing)
-            .style("fill", d => d.color);
+            .style("fill", d => d.color)
     
         legend.selectAll("rect")
             .data(legendItems)
@@ -229,7 +240,7 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget, userRole}) 
             .attr("height", legendRectSize)
             .attr("x", 0)
             .attr("y", (d, i) => i * (legendRectSize + legendSpacing))
-            .style("fill", d => d.color);
+            .style("fill", d => d.color)
     
         legend.selectAll("text")
             .data(legendItems)
@@ -238,9 +249,9 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget, userRole}) 
             .attr("x", legendRectSize + legendSpacing)
             .attr("y", (d, i) => i * (legendRectSize + legendSpacing) + (legendRectSize / 2)  + legendSpacing)
             .attr("dy", "0.35em")
-            .text(d => d.user);
+            .text(d => d.user)
     
-        return legend;
+        return legend
     }
 
   return (

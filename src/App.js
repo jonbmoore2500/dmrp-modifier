@@ -1,13 +1,12 @@
 import React, {useContext} from "react"
-import {BrowserRouter, Routes, Route, redirect} from "react-router-dom"
-import {Outlet, NavLink} from "react-router-dom"
+import {BrowserRouter, Routes, Route} from "react-router-dom"
+import {NavLink} from "react-router-dom"
 import './App.css';
 import { DataContext } from "./contexts/DataContext";
 import Header from './components/Header';
 import CSVImport from './components/CSVImport';
 import ResultTableCont from './components/ResultTableCont';
 import GraphsLayout from "./components/GraphsLayout";
-import GraphContainer from "./components/GraphContainer";
 import ChartContainer from "./components/ChartContainer";
 
 function App() {
@@ -33,15 +32,12 @@ function App() {
             <Route path="/graphs" element={<GraphsLayout />}>
               <Route path="/graphs:proj" element={<ChartContainer />} />
             </Route>
-            {/* <Route path="/budget" element={<BudgetLayout />} >
-              <Route path="/budget:proj" element={<BudgetContainer />} />
-            </Route> */}
           </Routes>
         </BrowserRouter>
         : null}
       </div>
     </div>
-  );
+  )
 }
 
 export default App;

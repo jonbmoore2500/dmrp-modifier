@@ -1,16 +1,13 @@
 // temporary, for experimenting - might be more permanent, tbd
 
 import React, {useContext, useEffect, useState} from "react"
-import DatePicker from 'react-datepicker';
+
 import 'react-datepicker/dist/react-datepicker.css';
-import { ComposedChart, XAxis, YAxis, CartesianGrid, Line, Tooltip, Area } from "recharts"
 import { useParams } from "react-router-dom"
 import { DataContext } from "../contexts/DataContext"
 import D3Chart from "./D3Chart"
-import processGraph from "../custom_hooks/processGraph"
 import processChart from "../custom_hooks/processChart"
-import timelineSlice from "../custom_hooks/timelineSlice"
-import timelineByOption from "../custom_hooks/timelineByOption"
+import ChartBudgetForm from "./ChartBudgetForm";
 import addBudgetLine from "../custom_hooks/addBudgetLine"
 
 function ChartContainer() {
@@ -22,11 +19,12 @@ function ChartContainer() {
 
     const [userRole, setUserRole] = useState("userName")
 
-    const [budgetSettings, setBudgetSettings] = useState({budgetVal: null, startDate: null, duration: 12})
+    const budgetDefault = {budgetVal: undefined, startDate: null, duration: 12}
+    const [budgetSettings, setBudgetSettings] = useState(budgetDefault)
 
 
     function resetBudget() {
-        setBudgetSettings({budgetVal: null, startDate: null, duration: 12})
+        setBudgetSettings(budgetDefault)
     }
 
     function handleViewChange(e) {
@@ -38,33 +36,12 @@ function ChartContainer() {
         setUserRole(e.target.value)
     }
 
-    function handlePlotBudget(event) {
-        event.preventDefault();
-        const inputValue = event.target.number.value;
-        if (/^\d+$/.test(inputValue)) {
-            const parsedNumber = parseInt(inputValue, 10);
-            setBudgetSettings({...budgetSettings, budgetVal: parsedNumber})
-        } else {
-            setBudgetSettings({...budgetSettings, budgetVal: null})
-        }
-    }
-
-    function handleChangeStart(date) {
-        setBudgetSettings({...budgetSettings, startDate: date.toString().slice(4, 15)})
-    }
-
-    function handleLengthChange(e) {
-        e.preventDefault()
-        if (/^\d+$/.test(e.target.value)) {
-            setBudgetSettings({...budgetSettings, duration: e.target.value})
-        }
-    }
-
     let projId = useParams()
-
     const selectedProj = data.find((proj) => proj.proj === projId.proj)
+    console.log(selectedProj)
 
     let [teamData, usersData] = processChart(selectedProj, weekMonth, userRole)
+    console.log(teamData, usersData, "chartBudgetTest")
 
     if (budgetSettings.budgetVal) {
         teamData = addBudgetLine(teamData, budgetSettings, weekMonth)
@@ -94,43 +71,7 @@ function ChartContainer() {
                     </select>
                 </label>
                 { budgetVsUsers ? 
-                    <>
-                        <form onSubmit={handlePlotBudget}>
-                            <label>
-                                <input 
-                                    type="text"
-                                    name="number"
-                                    placeholder="$_____"
-                                />
-                            </label>
-                            <button type="submit">Apply Budget</button>
-                        </form>
-
-                        <label>
-                            Change Default Project Start Date &#40;optional&#41;
-                            <DatePicker
-                                selected={budgetSettings.startDate}
-                                onChange={handleChangeStart}
-                                dateFormat="MM/dd/yyyy"
-                                isClearable
-                                showYearDropdown
-                                scrollableYearDropdown
-                            />
-                        </label>
-
-                        <form onSubmit={handleLengthChange}>
-                            <label>
-                                Project Length &#40;months&#41;
-                                <input 
-                                    value={budgetSettings.duration}
-                                    type="text"
-                                    name="months"
-                                    onChange={(e) => setBudgetSettings({...budgetSettings, duration: e.target.value})}
-                                />
-                            </label>
-                            <button type="submit">Change Length</button>
-                        </form>
-                    </>
+                    <ChartBudgetForm setBudgetSettings={setBudgetSettings} defaultVals={budgetDefault}/>
                     :
                     <label>
                     Choose an Area Breakdown

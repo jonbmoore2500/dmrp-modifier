@@ -1,7 +1,10 @@
 function addBudgetLine(data, budgetSettings, weekMonth) {
     // {budgetVal: null, startDate: null, duration: 12} - for reference
+    let timelineBreakdown = budgetSettings.duration
     if (weekMonth === "week") {
-        budgetSettings.duration = (52/12) * budgetSettings.duration
+        timelineBreakdown = (52/12) * timelineBreakdown
+        // budgetSettings.duration = (52/12) * budgetSettings.duration
+        // this breaks, somehow sets the state of the controlled form. look into it, but in meantime just choose new variable. 
     }
 
     return data.map((date, i) => {

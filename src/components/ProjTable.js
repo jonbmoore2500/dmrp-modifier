@@ -176,7 +176,7 @@ function ProjTable({project}) {
                                         onMouseOver={(e) => handleMouseOver(e.target.id)}
                                         onClick={(e) => handleClick(e.target.id)}
                                     >
-                                        {(showRates && i%2 === 1) ? "$" + x : x }
+                                        {(showRates && i%2 === 1) ? `$${parseFloat(x).toFixed(2)}` : x }
                                     </td>
                                 ))}
                             </tr>
@@ -185,7 +185,7 @@ function ProjTable({project}) {
                             <th className="sticky">{totalRow[0]}</th>
                             {showRates ? <th className="rates" style={{left: col2Left}}>{totalRow[1]}</th> : null}
                             {totalRow.slice((showRates ? 2 : 1), (weeksNum + 1) * (showRates ? 2 : 1)).map((x, i) => (
-                                <th key={-i} className="totalCell">{(showRates && i%2 === 1 && i >= 0) ? "$" + x : x}</th>
+                                <th key={-i} className="totalCell">{(showRates && i%2 === 1 && i >= 0) ? `$${parseFloat(x).toFixed(2)}` : x}</th>
                             ))}
                         </tr>
                     </tbody>

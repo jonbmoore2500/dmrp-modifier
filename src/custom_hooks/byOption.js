@@ -7,17 +7,20 @@ function byOption(teams, users, option) {
     const userCount = users.length / teams.length
 
     function getMonth(date, adjust = 0) {
-        let month = parseInt(date.slice(0, 2))
-        let year = parseInt(date.slice(6, 8))
-        if (date.length > 8 && monthsArr[month - 1] !== date.slice(8, 11)) {
+        let month = parseInt(date.slice(0, 2)) // 1 based month num. 1 = jan, 2 = feb...
+        let year = parseInt(date.slice(6, 8))// self explanatory
+        if (date.length > 20 && monthsArr[month - 1] !== date.slice(23, 26)) { // if date is partial week and should be the next month, add 1 to month. date long enough to include month name, that month doesn't match months arr
             month++
         }
-        month = month + 1 + adjust
-        if (month > 12) {
+        month = month + adjust 
+        if (month >= 12) {
             month = month % 12
             year++
+        } else if (month < 1) {
+            month += 12
+            year--
         }
-        return monthsArr[month - 1] + " '" + year.toString()
+        return monthsArr[month] + " '" + year.toString()
     }
 
     function handleMinus1Week(date) {
@@ -83,19 +86,25 @@ function byOption(teams, users, option) {
         }, [])
     }
 
-    
+    console.log("before", teams, users)
     if (option === "week") {
         teams = weekHelper(teams, 1)
         users = weekHelper(users, userCount)
         const zeroWeek = handleMinus1Week(teams[0].date)
-        return addZero(teams, users, zeroWeek)
+        // return addZero(teams, users, zeroWeek)
+        console.log(teams, users)
+        return [teams, users]
     }
 
     if (option === "month") {
         const zeroMonth = getMonth(teams[0].date, -1) 
         teams = [...Object.values(monthHelper(teams, false))]
         users = [...Object.values(monthHelper(users, true))]
-        return addZero(teams, users, zeroMonth)
+        // return addZero(teams, users, zeroMonth)
+        let result = addZero(teams, users, zeroMonth)
+        console.log(result)
+        console.log("after", teams, users)
+        return result
     }
 }
 
