@@ -20,35 +20,7 @@ function byOption(teams, users, option) {
             month += 12
             year--
         }
-        return monthsArr[month] + " '" + year.toString()
-    }
-
-    function handleMinus1Week(date) {
-        let [month, day, year] = date.split("/")
-
-        if (day < 8) {
-            let newDay = day - 7
-            month = month - 1
-            if (month < 1) {
-                month = 12
-                year -= 1
-            }
-            let daysTotal = 28
-            if (month === 2) { // feb
-                if (year % 4 === 0) { // leap year
-                    daysTotal += 1
-                }
-            } else if ([1, 3, 5, 7, 8, 10, 12].includes(month)) { // 31 day months
-                daysTotal = 31
-            } else { // 30 day months
-                daysTotal = 30
-            }
-            day = daysTotal + newDay
-        } else {
-            day -= 7
-        }
-
-        return month + "/" + day + "/" + year
+        return `${monthsArr[month]} '${year.toString()}`
     }
 
     function addZero(teamData, usersData, zero) {
@@ -65,7 +37,7 @@ function byOption(teams, users, option) {
             const currentWk = current.date.slice(0, 8)
             const next = i + indexDiff <= arr.length - 1 ? arr[i + indexDiff].date.slice(0, 8) : null 
             if (currentWk !== next) {
-                result.push({...current, date: dateMath(currentWk)})
+                result.push({...current, date: dateMath(currentWk, 9)})
             }
             return result
         }, [])
@@ -86,25 +58,18 @@ function byOption(teams, users, option) {
         }, [])
     }
 
-    console.log("before", teams, users)
     if (option === "week") {
         teams = weekHelper(teams, 1)
         users = weekHelper(users, userCount)
-        const zeroWeek = handleMinus1Week(teams[0].date)
-        // return addZero(teams, users, zeroWeek)
-        console.log(teams, users)
-        return [teams, users]
+        const zeroWeek = dateMath(teams[0].date, -7)
+        return addZero(teams, users, zeroWeek)
     }
 
     if (option === "month") {
         const zeroMonth = getMonth(teams[0].date, -1) 
         teams = [...Object.values(monthHelper(teams, false))]
         users = [...Object.values(monthHelper(users, true))]
-        // return addZero(teams, users, zeroMonth)
-        let result = addZero(teams, users, zeroMonth)
-        console.log(result)
-        console.log("after", teams, users)
-        return result
+        return addZero(teams, users, zeroMonth)
     }
 }
 

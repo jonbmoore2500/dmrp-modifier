@@ -46,16 +46,12 @@ function D3Chart({teamData, usersData, budgetVsUsers, includeBudget, userRole}) 
             .x(d => x(d.date) + x.bandwidth() / 2)
             .y(d => y(d.budget))
 
-        
-
-
-
         svg.append("path")
             .attr("fill", "none")
             .attr("stroke", "black")
             .attr("stroke-width", 2)
             .attr("d", line(teamData))
-        
+
         if (budgetVsUsers && includeBudget) { // all expected-line-specific and diffArea rendering
             svg.append("g")
                 .attr("transform", `translate(${marginLeft},0)`)

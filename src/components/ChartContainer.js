@@ -38,10 +38,8 @@ function ChartContainer() {
 
     let projId = useParams()
     const selectedProj = data.find((proj) => proj.proj === projId.proj)
-    console.log(selectedProj)
 
     let [teamData, usersData] = processChart(selectedProj, weekMonth, userRole)
-    console.log(teamData, usersData, "chartBudgetTest")
 
     if (budgetSettings.budgetVal) {
         teamData = addBudgetLine(teamData, budgetSettings, weekMonth)
