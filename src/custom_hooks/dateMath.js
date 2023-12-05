@@ -12,13 +12,13 @@ function dateMath(date, daysDifference = 0) {
     } 
 
     function handleAdd(monthDays) {
-        if (newDay < 1) { // too few days
+        if (newDay < 1) {
             day = monthDays + newDay
             // already handled decrement month/year
-        } else if (newDay > monthDays) { // too many days
+        } else if (newDay > monthDays) {
             day = newDay - monthDays
             month += 1
-        } else { // just right
+        } else {
             day = newDay
         }
     }

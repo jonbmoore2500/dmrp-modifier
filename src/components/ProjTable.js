@@ -110,7 +110,6 @@ function ProjTable({project}) {
                 selectedRows.push(row)
             }
             navigator.clipboard.writeText(selectedRows.join("\n")).then(function() {
-                // console.log(selectedRows.join("\n"))
                 handleCancel()
                 setCopied(true)
             })

@@ -3,13 +3,16 @@ function addBudgetLine(data, budgetSettings, weekMonth) {
     let timelineBreakdown = budgetSettings.duration
     if (weekMonth === "week") {
         timelineBreakdown = (52/12) * timelineBreakdown
-        // budgetSettings.duration = (52/12) * budgetSettings.duration
-        // this breaks, somehow sets the state of the controlled form. look into it, but in meantime just choose new variable. 
     }
+    const budgetUnitAmount = budgetSettings.budgetVal / timelineBreakdown
 
-    return data.map((date, i) => {
-        return {...date, expected: Math.floor((budgetSettings.budgetVal/budgetSettings.duration)*i)}
+    const dateAdjust = budgetSettings.startDate ? budgetSettings.startDate.getDate() / 30 : 0
+
+    let dataWithBudget = data.map((date, i) => {
+        return {...date, expected: Math.floor((budgetUnitAmount * i) - (budgetUnitAmount * dateAdjust))}
     })
+
+    return dataWithBudget
 }
 
 export default addBudgetLine

@@ -8,8 +8,7 @@ function ChartBudgetForm({setBudgetSettings, defaultVals}) {
     function handlePlotBudget(e) {
         e.preventDefault();
         setBudgetSettings(budgetForm)
-        // add reset after building heads up display in chart itself
-        // i've gone overboard with the controlled form. I can't delete back to the first character in the budget field
+        // add reset after building heads up display of data in chart itself
     }
 
     function handleFormNumbers(e, field) {
